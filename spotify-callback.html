@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hana Cee - Spotify Connected! 🎵</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0015 0%, #1a0033 50%, #0f0020 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(219, 39, 119, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-50px, 50px) rotate(180deg); }
+        }
+
+        /* Neon grid effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(138, 43, 226, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(138, 43, 226, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 750px;
+            width: 100%;
+            background: rgba(15, 5, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 
+                0 0 60px rgba(138, 43, 226, 0.3),
+                0 0 120px rgba(219, 39, 119, 0.2),
+                inset 0 0 40px rgba(138, 43, 226, 0.05);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            animation: containerGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes containerGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 60px rgba(138, 43, 226, 0.3),
+                    0 0 120px rgba(219, 39, 119, 0.2),
+                    inset 0 0 40px rgba(138, 43, 226, 0.05);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 80px rgba(138, 43, 226, 0.5),
+                    0 0 140px rgba(219, 39, 119, 0.3),
+                    inset 0 0 50px rgba(138, 43, 226, 0.1);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            margin-top: -30px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-img, .pet-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid rgba(138, 43, 226, 0.5);
+            box-shadow: 
+                0 0 30px rgba(138, 43, 226, 0.6),
+                0 0 60px rgba(219, 39, 119, 0.4);
+            animation: float 3s ease-in-out infinite;
+            object-fit: cover;
+        }
+
+        .pet-img {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .brand-logo {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto 20px;
+            display: block;
+            filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8));
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8)); }
+            50% { filter: drop-shadow(0 0 30px rgba(219, 39, 119, 0.9)); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8a2be2, #db2777, #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #db2777;
+            text-shadow: 0 0 20px rgba(219, 39, 119, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .status-box {
+            background: rgba(138, 43, 226, 0.1);
+            border: 2px solid rgba(138, 43, 226, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: inset 0 0 30px rgba(138, 43, 226, 0.1);
+        }
+
+        .status-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .status-text {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #9333ea;
+            margin-bottom: 15px;
+        }
+
+        .token-info {
+            background: rgba(15, 5, 30, 0.6);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #db2777;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .token-info::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .token-info::-webkit-scrollbar-track {
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 10px;
+        }
+
+        .token-info::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #8a2be2, #db2777);
+            border-radius: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            margin: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            border: 2px solid;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8a2be2, #db2777);
+            border-color: #db2777;
+            color: white;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(138, 43, 226, 0.1);
+            border-color: #9333ea;
+            color: #9333ea;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(138, 43, 226, 0.2);
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .instructions {
+            background: rgba(219, 39, 119, 0.1);
+            border-left: 4px solid #db2777;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .twitch-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #9146ff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .twitch-link:hover {
+            color: #db2777;
+            text-shadow: 0 0 20px rgba(145, 70, 255, 0.8);
+            transform: scale(1.05);
+        }
+
+        .error-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .error-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .avatar-img, .pet-img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="Images/Hana Cee.png" alt="Hana Cee Brand" class="brand-logo">
+            
+            <div class="logo-container">
+                <img src="Images/hana.png" alt="Hana Cee" class="avatar-img">
+                <img src="Images/StreamPet.png" alt="Stream Pet" class="pet-img">
+            </div>
+        </div>
+
+        <div id="success-content" style="display: none;">
+            <div class="status-box">
+                <div class="status-icon">🎵✨</div>
+                <div class="status-text">Spotify Connected Successfully!</div>
+                <p style="color: #9333ea; margin-top: 10px;">Your Stream Pet can now react to your music! 🎶</p>
+            </div>
+
+            <div class="instructions">
+                <strong style="color: #db2777;">📋 Next Steps:</strong>
+                <ol>
+                    <li>Copy your access token below</li>
+                    <li>Return to the Stream Pet config page</li>
+                    <li>Paste the token in the text box</li>
+                    <li>Click "Complete Login"</li>
+                    <li>Rock out with your pet! 🎸</li>
+                </ol>
+            </div>
+
+            <div class="token-info" id="token-display">
+                Loading token...
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="copyToken()">
+                    <span>📋 Copy Token</span>
+                </button>
+                <button class="btn btn-secondary" onclick="window.close()">
+                    <span>✓ Done</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="error-content" style="display: none;">
+            <div class="error-box">
+                <div class="error-icon">❌</div>
+                <div class="status-text" style="color: #ef4444;">Something went wrong!</div>
+                <p id="error-message" style="color: #fca5a5; margin-top: 10px;"></p>
+            </div>
+
+            <div class="instructions">
+                <strong style="color: #db2777;">🔧 Troubleshooting:</strong>
+                <ol>
+                    <li>Make sure you added the redirect URI to your Spotify app settings</li>
+                    <li>The redirect URI must EXACTLY match what's in the config</li>
+                    <li>Try disconnecting and reconnecting</li>
+                    <li>Check the browser console for error details</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-secondary" onclick="window.close()">
+                    <span>← Go Back</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <a href="https://twitch.tv/Hana_Cee" target="_blank" class="twitch-link">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+                </svg>
+                Watch Hana_Cee on Twitch
+            </a>
+            <p style="margin-top: 15px; color: #9333ea; font-size: 0.9em;">
+                Brought to you by Hana_Cee and her Stream Pet 💜 Made with love for the community!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Extract token from URL hash
+        function getTokenFromHash() {
+            const hash = window.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            
+            const accessToken = params.get('access_token');
+            const expiresIn = params.get('expires_in');
+            const state = params.get('state');
+            const error = params.get('error');
+            
+            return { accessToken, expiresIn, state, error };
+        }
+
+        // Copy token to clipboard
+        function copyToken() {
+            const tokenElement = document.getElementById('token-display');
+            const text = tokenElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target.closest('.btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span>✓ Copied!</span>';
+                btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const btn = event.target.closest('.btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span>✓ Copied!</span>';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        // Initialize page
+        window.addEventListener('load', () => {
+            const { accessToken, expiresIn, state, error } = getTokenFromHash();
+            
+            if (error) {
+                // Show error
+                document.getElementById('error-content').style.display = 'block';
+                let errorMsg = '';
+                
+                switch(error) {
+                    case 'access_denied':
+                        errorMsg = 'You denied access to Spotify. Please try again and click "Agree" to connect.';
+                        break;
+                    case 'invalid_client':
+                        errorMsg = 'Invalid Client ID or Redirect URI mismatch. Check your Spotify app settings.';
+                        break;
+                    case 'unsupported_response_type':
+                        errorMsg = 'The redirect URI domain doesn\'t exist or isn\'t accessible.';
+                        break;
+                    default:
+                        errorMsg = `Error: ${error}`;
+                }
+                
+                document.getElementById('error-message').textContent = errorMsg;
+            } else if (accessToken) {
+                // Show success
+                document.getElementById('success-content').style.display = 'block';
+                
+                // Create token data object
+                const tokenData = {
+                    access_token: accessToken,
+                    expires_in: expiresIn,
+                    state: state,
+                    token_expiry: Date.now() + (parseInt(expiresIn) * 1000)
+                };
+                
+                // Display formatted token
+                document.getElementById('token-display').textContent = JSON.stringify(tokenData, null, 2);
+                
+                // Try to send to parent window (if opened as popup)
+                if (window.opener) {
+                    try {
+                        window.opener.postMessage({
+                            type: 'spotify_token',
+                            data: tokenData
+                        }, '*');
+                    } catch (e) {
+                        console.log('Could not send to parent window:', e);
+                    }
+                }
+            } else {
+                // No token or error - show error
+                document.getElementById('error-content').style.display = 'block';
+                document.getElementById('error-message').textContent = 'No authorization data found in URL. Please try connecting again from the config page.';
+            }
+        });
+    </script>
+</body>
+</html>
