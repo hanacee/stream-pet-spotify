@@ -416,8 +416,8 @@
 
                         <div class="form-group">
                             <label for="twitch-redirect-uri">Redirect URI</label>
-                            <input type="text" id="twitch-redirect-uri" placeholder="http://localhost/config.html">
-                            <small>Must match your app settings (usually this config page URL)</small>
+                            <input type="text" id="twitch-redirect-uri" placeholder="https://hanacee.github.io/stream-pet-spotify/twitch-callback.html" value="https://hanacee.github.io/stream-pet-spotify/twitch-callback.html">
+                            <small>Use the hosted callback URL (recommended) or set up your own</small>
                         </div>
                     </div>
                 </div>
@@ -561,16 +561,20 @@
                     <strong>📋 Setup Instructions:</strong>
                     <ol>
                         <li>Create an app at <a href="https://dev.twitch.tv/console/apps" target="_blank">Twitch Developer Console</a></li>
-                        <li>Add OAuth Redirect URL: <code id="redirect-url-display"></code> <button class="btn btn-sm" onclick="copyRedirectUrl()">📋 Copy</button></li>
-                        <li>Copy the Client ID and paste it in "Client ID" field above</li>
+                        <li>Add OAuth Redirect URL: <code>https://hanacee.github.io/stream-pet-spotify/twitch-callback.html</code> <button class="btn btn-sm" onclick="copyTwitchRedirectUrl()">📋 Copy</button></li>
+                        <li>Copy the Client ID from Twitch and paste it in "Client ID" field above</li>
+                        <li>The Redirect URI is pre-filled with the hosted callback URL (recommended)</li>
                         <li>Enter your Twitch channel name (without #) in "Channel Name" field</li>
-                        <li>Click "Authenticate Main Account" to get your OAuth token</li>
+                        <li>Click "🔐 Authenticate Main Account" - a new window will open for authorization</li>
+                        <li>After authorizing, the window will close automatically</li>
                         <li>Click "Save Configuration" button at the top</li>
                         <li>Open <code>index.html</code> in OBS Browser Source - connection will show in debug log</li>
                     </ol>
                     <div class="alert alert-warning" style="margin-top: 10px;">
                         <strong>⚠️ Troubleshooting:</strong>
                         <ul>
+                            <li>Make sure the Redirect URI in Twitch app settings matches exactly: <code>https://hanacee.github.io/stream-pet-spotify/twitch-callback.html</code></li>
+                            <li>Allow pop-ups from this page for authentication windows to open</li>
                             <li>Make sure you've clicked "Save Configuration" after adding your channel and client ID</li>
                             <li>Check that <code>index.html</code> is open in OBS Browser Source (not this config page)</li>
                             <li>Enable Debug Mode in Advanced Settings to see connection logs</li>
@@ -581,11 +585,10 @@
                 
                 <script>
                     // Display and copy redirect URL helper
-                    document.getElementById('redirect-url-display').textContent = window.location.origin + '/config.html';
-                    function copyRedirectUrl() {
-                        const url = window.location.origin + '/config.html';
+                    function copyTwitchRedirectUrl() {
+                        const url = 'https://hanacee.github.io/stream-pet-spotify/twitch-callback.html';
                         navigator.clipboard.writeText(url).then(() => {
-                            alert('Redirect URL copied to clipboard!');
+                            alert('Twitch Redirect URL copied to clipboard!');
                         });
                     }
                 </script>
@@ -1480,7 +1483,7 @@
                     
                     <div class="form-group">
                         <label for="spotify-redirect-uri-input">Redirect URI</label>
-                        <input type="text" id="spotify-redirect-uri-input" placeholder="https://YOUR-USERNAME.github.io/stream-pet/spotify-callback.html">
+                        <input type="text" id="spotify-redirect-uri-input" placeholder="https://YOUR-USERNAME.github.io/stream-pet-spotify/spotify-callback.html">
                         <small>Must EXACTLY match what you entered in Spotify Dashboard settings</small>
                     </div>
                     
@@ -1490,59 +1493,31 @@
                         <div id="spotify-status" style="margin-top: 10px; font-weight: bold;"></div>
                     </div>
                     
-                    <div class="form-group" id="spotify-manual-token" style="display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6;">
-                        <label for="spotify-token-input"><strong>📋 Paste Your Access Token:</strong></label>
-                        <small style="display: block; margin-bottom: 10px; color: #666;">After authorizing on Spotify, your custom callback page will display the access token. Copy the token (just the token part, not the whole URL) and paste it below:</small>
-                        <textarea id="spotify-token-input" placeholder="Paste your access token here (e.g., BQC...)" style="width: 100%; min-height: 80px; margin-bottom: 10px; font-family: monospace; font-size: 12px;"></textarea>
-                        <button id="save-spotify-token" class="btn btn-success">Complete Login</button>
-                        <button id="cancel-spotify-token" class="btn btn-secondary">Cancel</button>
-                    </div>
-                    
                     <div class="info-box" style="margin-top: 20px;">
                         <h4>📋 Quick Setup Guide:</h4>
                         <ol style="margin: 10px 0; padding-left: 20px;">
-                            <li><strong>Upload Callback Page:</strong> Upload <code>spotify-callback.html</code> to a web host (GitHub Pages recommended - see instructions below)</li>
                             <li>Go to <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Developer Dashboard</a></li>
                             <li>Click your app (or "Create App" if you haven't yet)</li>
                             <li>Click <strong>"Settings"</strong> (top right)</li>
-                            <li>Scroll to <strong>"Redirect URIs"</strong></li>
-                            <li>Click <strong>"Edit"</strong></li>
-                            <li>Enter your callback URL (e.g., <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">https://YOUR-USERNAME.github.io/stream-pet/spotify-callback.html</code>)</li>
-                            <li>Click <strong>"Add"</strong>, then click <strong>"Save"</strong> at the bottom</li>
-                            <li>Copy the "Client ID" and paste it in the field above ⬆️</li>
-                            <li>Make sure the "Redirect URI" field above matches exactly what you entered in Spotify Dashboard</li>
-                            <li>Click "Connect Spotify" below ⬇️</li>
-                            <li>After authorizing, the callback page will display your token - copy it</li>
-                            <li>Paste it in the box that appears and click "Complete Login"</li>
+                            <li>Scroll to <strong>"Redirect URIs"</strong> and click <strong>"Edit"</strong></li>
+                            <li>Add your callback URL: <code>https://hanacee.github.io/stream-pet-spotify/spotify-callback.html</code></li>
+                            <li>Click <strong>"Add"</strong>, then <strong>"Save"</strong> at the bottom</li>
+                            <li>Copy your "Client ID" and paste it in the field above ⬆️</li>
+                            <li>Paste the same Redirect URI in the field above</li>
+                            <li>Click "Connect Spotify" - you'll be redirected to authorize</li>
+                            <li>After approving, the connection will complete automatically!</li>
                         </ol>
+                        <div style="background: #17a2b8; color: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                            <strong>✨ What you'll get:</strong> Your pet will announce track changes and react to the music you're playing on Spotify!
+                        </div>
                         <div style="background: #dc3545; color: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
-                            <strong>⚠️ IMPORTANT:</strong> You MUST add your callback URL to your Spotify app's Redirect URIs list in Settings → Edit Settings → Redirect URIs → Add. The "INVALID_CLIENT" error means it's not added yet!
+                            <strong>⚠️ Common Issues:</strong>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li><strong>"Invalid client"</strong> error means the Redirect URI isn't added to your Spotify app settings yet</li>
+                                <li>The Redirect URI must match EXACTLY (including https://, capitalization, slashes)</li>
+                                <li>After adding the URI, wait 30 seconds before trying to connect</li>
+                            </ul>
                         </div>
-                        
-                        <div id="github-setup-instructions" style="background: #f8f9fa; padding: 15px; margin-top: 10px; border-radius: 4px; border: 1px solid #dee2e6; color: #333;">
-                            <h4 style="margin-top: 0; color: #333;">🎨 GitHub Pages Setup (Recommended)</h4>
-                            <p>Host your custom <code>spotify-callback.html</code> for free on GitHub Pages:</p>
-                            <ol style="padding-left: 20px; margin: 10px 0;">
-                                <li>Go to <a href="https://github.com" target="_blank">GitHub.com</a> and sign in (or create a free account)</li>
-                                <li>Click <strong>"+"</strong> (top right) → <strong>"New repository"</strong></li>
-                                <li>Repository name: <code>stream-pet</code></li>
-                                <li>Make it <strong>Public</strong> ✅</li>
-                                <li>Click <strong>"Create repository"</strong></li>
-                                <li>Click <strong>"uploading an existing file"</strong></li>
-                                <li>Drag and drop <code>spotify-callback.html</code> from your Stream Pet folder</li>
-                                <li>Click <strong>"Commit changes"</strong></li>
-                                <li>Go to <strong>Settings</strong> → <strong>Pages</strong></li>
-                                <li>Under "Source", select <strong>main</strong> branch → <strong>Save</strong></li>
-                                <li>Wait 1-2 minutes for deployment</li>
-                                <li>Your callback URL will be: <code style="background: #fff; padding: 2px 6px; border-radius: 3px; user-select: all; color: #0c5460;">https://YOUR-USERNAME.github.io/stream-pet/spotify-callback.html</code></li>
-                                <li>Copy this URL and use it as your Redirect URI in both Spotify Dashboard and the field above!</li>
-                            </ol>
-                            <p style="margin-top: 10px; padding: 10px; background: #d4edda; border-radius: 4px; color: #155724;">
-                                ✨ <strong>Bonus:</strong> The custom callback page features a cool cyberpunk theme from me, Hana Cee!
-                            </p>
-                        </div>
-                        <a href="#" id="show-github-setup" style="color: #0c5460; text-decoration: underline; cursor: pointer; font-size: 14px;">🎨 Click for GitHub Pages setup instructions (recommended!)</a>
-                    </div>
                     
                     <div class="form-section">
                         <h4>Genre Reactions</h4>

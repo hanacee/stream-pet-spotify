@@ -667,14 +667,16 @@ class StreamPet {
         const bubbleTail = bubbleContent.nextElementSibling;
         
         // Remove all style classes
-        const styleClasses = ['neon-cyberpunk', 'vaporwave', 'cute', 'manga', 'fiery', 'ice'];
+        const styleClasses = ['neon-cyberpunk', 'vaporwave', 'cute', 'manga', 'fiery', 'ice', 'wind', 'earth', 'water', 'lightning', 'gothic', 'terrafae', 'pommie', 'pokemon'];
         styleClasses.forEach(cls => {
+            this.messageBubble.classList.remove(cls);
             bubbleContent.classList.remove(cls);
             if (bubbleTail) bubbleTail.classList.remove(cls);
         });
         
         // Add selected style class (if not default)
         if (bubbleStyle !== 'default') {
+            this.messageBubble.classList.add(bubbleStyle);
             bubbleContent.classList.add(bubbleStyle);
             if (bubbleTail) bubbleTail.classList.add(bubbleStyle);
         }

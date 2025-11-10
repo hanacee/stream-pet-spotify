@@ -178,10 +178,12 @@ body.light-mode .info-box {
     font-family: 'Courier New', monospace;
     font-size: 12px;
     user-select: all;
+    color: #e0e0e0;
 }
 
 body.light-mode .info-box code {
     background: rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
 /* Tab Navigation */

@@ -570,7 +570,7 @@ class PetEnhancements {
      */
     unlockFeatures() {
         const level = this.config.growth.level;
-        const animations = ['bounce', 'wiggle', 'spin', 'float', 'shake', 'sway', 'jump', 'hop', 'pulse', 'slide-left', 'slide-right'];
+        const animations = ['bounce', 'wiggle', 'spin', 'float', 'shake', 'sway', 'jump', 'hop', 'pulse', 'inflate', 'slide-left', 'slide-right'];
         const particles = ['hearts', 'stars', 'celebrate', 'money', 'fire', 'ice', 'food'];
         
         // Unlock animations every 2 levels

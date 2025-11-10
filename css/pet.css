@@ -2,6 +2,9 @@
  * Stream Pet Display Styles
  */
 
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -423,17 +426,18 @@ body {
 /* Terrafae Style */
 .bubble-content.terrafae {
     background: linear-gradient(135deg, rgba(139, 0, 0, 0.95) 0%, rgba(100, 0, 0, 0.95) 50%, rgba(120, 0, 0, 0.95) 100%);
-    color: #000000;
+    color: #ffffff;
     border: 3px solid #000000;
     box-shadow: 
         0 0 20px rgba(139, 0, 0, 0.8),
         0 8px 20px rgba(0, 0, 0, 0.9),
         inset 0 0 30px rgba(180, 0, 0, 0.3);
     text-shadow: 
-        1px 1px 2px rgba(255, 0, 0, 0.5),
-        0 0 5px rgba(139, 0, 0, 0.6);
-    font-family: 'Georgia', serif;
-    font-weight: bold;
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(139, 0, 0, 0.8);
+    font-family: 'MedievalSharp', 'Papyrus', 'Georgia', serif;
+    font-weight: normal;
+    font-size: 18px;
     animation: terrafaePulse 2.5s ease-in-out infinite;
 }
 
@@ -534,44 +538,172 @@ body {
     }
 }
 
-/* Pokemon Style */
+/* Pokemon GameBoy Style - Classic Dialog Box */
 .bubble-content.pokemon {
-    background: linear-gradient(135deg, rgba(255, 203, 5, 0.95) 0%, rgba(255, 223, 0, 0.95) 50%, rgba(255, 203, 5, 0.95) 100%);
-    color: #003a70;
-    border: 4px solid #003a70;
+    background: #f8f8f8;
+    color: #000;
+    border: none;
+    padding: 20px 24px;
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    position: relative;
+    box-shadow: none;
+    text-shadow: none;
+    
+    /* Create the classic Pokemon border with corner pieces */
+    background-image:
+        /* Top-left corner */
+        linear-gradient(to right, #000 8px, transparent 8px),
+        linear-gradient(to bottom, #000 8px, transparent 8px),
+        /* Top-right corner */
+        linear-gradient(to left, #000 8px, transparent 8px),
+        linear-gradient(to bottom, #000 8px, transparent 8px),
+        /* Bottom-left corner */
+        linear-gradient(to right, #000 8px, transparent 8px),
+        linear-gradient(to top, #000 8px, transparent 8px),
+        /* Bottom-right corner */
+        linear-gradient(to left, #000 8px, transparent 8px),
+        linear-gradient(to top, #000 8px, transparent 8px),
+        /* Borders */
+        linear-gradient(to right, #000, #000),
+        linear-gradient(to right, #000, #000),
+        linear-gradient(to bottom, #000, #000),
+        linear-gradient(to bottom, #000, #000);
+    
+    background-size:
+        /* Corners */
+        8px 4px, 4px 8px,
+        8px 4px, 4px 8px,
+        8px 4px, 4px 8px,
+        8px 4px, 4px 8px,
+        /* Borders */
+        calc(100% - 16px) 4px,
+        calc(100% - 16px) 4px,
+        4px calc(100% - 16px),
+        4px calc(100% - 16px);
+    
+    background-position:
+        /* Top corners */
+        0 0, 0 0,
+        100% 0, 100% 0,
+        /* Bottom corners */
+        0 100%, 0 100%,
+        100% 100%, 100% 100%,
+        /* Borders */
+        8px 0, 8px 100%,
+        0 8px, 100% 8px;
+    
+    background-repeat: no-repeat;
+    background-color: #f8f8f8;
+    
+    /* Inner shadow for depth */
     box-shadow: 
-        0 0 25px rgba(255, 203, 5, 0.9),
-        0 8px 20px rgba(0, 58, 112, 0.6),
-        inset 0 0 30px rgba(255, 255, 255, 0.5);
-    text-shadow: 
-        0 0 5px rgba(255, 255, 255, 0.9),
-        2px 2px 3px rgba(0, 58, 112, 0.8);
-    font-family: 'Arial', sans-serif;
-    font-weight: 900;
-    font-style: italic;
-    letter-spacing: 1px;
-    animation: pokemonSpark 2s ease-in-out infinite;
+        inset 4px 4px 0 rgba(0, 0, 0, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Pokeball in top-left corner */
+.bubble-content.pokemon::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    width: 24px;
+    height: 24px;
+    background: 
+        radial-gradient(
+            white 4px,
+            black 4.5px 5px,
+            white 5.5px 6.5px,
+            black 7px 8.5px,
+            transparent 9px
+        ),
+        linear-gradient(to bottom, #dc0a2d 0 9px, black 9.5px 12px, white 12.5px 100%);
+    border-radius: 50%;
+    border: 2.5px solid black;
+    z-index: 10;
+}
+
+/* Pokeball in top-right corner */
+.bubble-content.pokemon::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 24px;
+    height: 24px;
+    background: 
+        radial-gradient(
+            white 4px,
+            black 4.5px 5px,
+            white 5.5px 6.5px,
+            black 7px 8.5px,
+            transparent 9px
+        ),
+        linear-gradient(to bottom, #dc0a2d 0 9px, black 9.5px 12px, white 12.5px 100%);
+    border-radius: 50%;
+    border: 2.5px solid black;
+    z-index: 10;
+}
+
+/* Pokeballs in bottom corners using parent container */
+.message-bubble.pokemon::before,
+.message-bubble.pokemon::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: 
+        radial-gradient(
+            white 4px,
+            black 4.5px 5px,
+            white 5.5px 6.5px,
+            black 7px 8.5px,
+            transparent 9px
+        ),
+        linear-gradient(to bottom, #dc0a2d 0 9px, black 9.5px 12px, white 12.5px 100%);
+    border-radius: 50%;
+    border: 2.5px solid black;
+    z-index: 10;
+}
+
+/* Bottom-left pokeball */
+.message-bubble.pokemon::before {
+    bottom: 2px;
+    left: -12px;
+}
+
+/* Bottom-right pokeball */
+.message-bubble.pokemon::after {
+    bottom: 2px;
+    right: -12px;
+}
+
+/* Ensure proper positioning */
+.message-bubble.pokemon {
+    position: relative;
+}
+
+.message-bubble.pokemon .bubble-content {
+    position: relative;
+}
+
+@keyframes pokemonArrowBlink {
+    0%, 49% { 
+        opacity: 1;
+    }
+    50%, 100% { 
+        opacity: 0;
+    }
 }
 
 .bubble-tail.pokemon {
-    border-top: 10px solid #003a70;
-    filter: drop-shadow(0 0 12px rgba(255, 203, 5, 0.8));
-}
-
-@keyframes pokemonSpark {
-    0%, 100% { 
-        filter: brightness(1);
-        box-shadow: 
-            0 0 25px rgba(255, 203, 5, 0.9),
-            0 8px 20px rgba(0, 58, 112, 0.6);
-    }
-    50% { 
-        filter: brightness(1.2);
-        box-shadow: 
-            0 0 35px rgba(255, 203, 5, 1),
-            0 8px 25px rgba(0, 58, 112, 0.8),
-            0 0 50px rgba(255, 255, 255, 0.6);
-    }
+    border-top: 10px solid #f8f8f8;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+    position: relative;
 }
 
 
@@ -831,6 +963,18 @@ body {
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.15); }
+}
+
+#pet-container.inflate-animation {
+    animation: inflate 1.2s ease-in-out !important;
+}
+
+@keyframes inflate {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.3); }
+    50% { transform: scale(1.35); }
+    70% { transform: scale(1.3); }
+    100% { transform: scale(1); }
 }
 
 #pet-container.slide-left-animation {
@@ -1113,11 +1257,12 @@ body {
 
 .level-up-bar.terrafae .level-up-text {
     text-shadow: 
-        1px 1px 2px rgba(255, 0, 0, 0.5),
-        0 0 5px rgba(139, 0, 0, 0.6) !important;
-    color: #000000 !important;
-    font-family: 'Georgia', serif !important;
-    font-weight: bold;
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(139, 0, 0, 0.8) !important;
+    color: #ffffff !important;
+    font-family: 'MedievalSharp', 'Papyrus', 'Georgia', serif !important;
+    font-weight: normal;
+    font-size: 20px;
 }
 
 /* Pommie Level-Up Bar */
@@ -1128,6 +1273,31 @@ body {
         rgba(255, 105, 180, 0.95));
     border: 3px solid #ff69b4;
     box-shadow: 0 0 25px rgba(255, 105, 180, 0.8);
+    position: relative;
+}
+
+/* Cat ears on level-up bar */
+.level-up-bar.pommie::before,
+.level-up-bar.pommie::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 15px solid #ff69b4;
+    filter: drop-shadow(0 0 6px rgba(255, 105, 180, 0.6));
+}
+
+.level-up-bar.pommie::before {
+    left: 15%;
+    transform: rotate(-10deg);
+}
+
+.level-up-bar.pommie::after {
+    right: 15%;
+    transform: rotate(10deg);
 }
 
 .level-up-bar.pommie .level-up-text {
@@ -1141,23 +1311,149 @@ body {
 
 /* Pokemon Level-Up Bar */
 .level-up-bar.pokemon {
-    background: linear-gradient(90deg, 
-        rgba(255, 203, 5, 0.95), 
-        rgba(255, 223, 0, 0.95), 
-        rgba(255, 203, 5, 0.95));
-    border: 4px solid #003a70;
-    box-shadow: 0 0 25px rgba(255, 203, 5, 0.9);
+    background: #f8f8f8;
+    border: 4px solid #000 !important;
+    border-radius: 0 !important;
+    box-shadow: 
+        inset 2px 2px 0 rgba(0, 0, 0, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+    
+    /* Pokemon border pattern */
+    background-image:
+        linear-gradient(to right, #000 4px, transparent 4px),
+        linear-gradient(to bottom, #000 4px, transparent 4px),
+        linear-gradient(to left, #000 4px, transparent 4px),
+        linear-gradient(to bottom, #000 4px, transparent 4px),
+        linear-gradient(to right, #000 4px, transparent 4px),
+        linear-gradient(to top, #000 4px, transparent 4px),
+        linear-gradient(to left, #000 4px, transparent 4px),
+        linear-gradient(to top, #000 4px, transparent 4px),
+        linear-gradient(to right, #000, #000),
+        linear-gradient(to right, #000, #000),
+        linear-gradient(to bottom, #000, #000),
+        linear-gradient(to bottom, #000, #000);
+    
+    background-size:
+        4px 2px, 2px 4px,
+        4px 2px, 2px 4px,
+        4px 2px, 2px 4px,
+        4px 2px, 2px 4px,
+        calc(100% - 8px) 2px,
+        calc(100% - 8px) 2px,
+        2px calc(100% - 8px),
+        2px calc(100% - 8px);
+    
+    background-position:
+        0 0, 0 0,
+        100% 0, 100% 0,
+        0 100%, 0 100%,
+        100% 100%, 100% 100%,
+        4px 0, 4px 100%,
+        0 4px, 100% 4px;
+    
+    background-repeat: no-repeat;
+    background-color: #f8f8f8;
+}
+
+/* Pokeball in top-left corner */
+.level-up-bar.pokemon::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 24px;
+    height: 24px;
+    background: 
+        radial-gradient(
+            white 4px,
+            black 4.5px 5px,
+            white 5.5px 6.5px,
+            black 7px 8.5px,
+            transparent 9px
+        ),
+        linear-gradient(to bottom, #dc0a2d 0 9px, black 9.5px 12px, white 12.5px 100%);
+    border-radius: 50%;
+    border: 2.5px solid black;
+    z-index: 10;
+}
+
+/* Pokeball in top-right corner */
+.level-up-bar.pokemon::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background: 
+        radial-gradient(
+            white 4px,
+            black 4.5px 5px,
+            white 5.5px 6.5px,
+            black 7px 8.5px,
+            transparent 9px
+        ),
+        linear-gradient(to bottom, #dc0a2d 0 9px, black 9.5px 12px, white 12.5px 100%);
+    border-radius: 50%;
+    border: 2.5px solid black;
+    z-index: 10;
 }
 
 .level-up-bar.pokemon .level-up-text {
-    text-shadow: 
-        0 0 8px rgba(255, 255, 255, 0.9),
-        2px 2px 3px rgba(0, 58, 112, 0.8) !important;
-    color: #003a70 !important;
-    font-family: 'Arial', sans-serif !important;
-    font-weight: 900;
-    font-style: italic;
-    letter-spacing: 1px;
+    text-shadow: none !important;
+    color: #000 !important;
+    font-family: 'Courier New', 'Consolas', monospace !important;
+    font-weight: bold;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+}
+
+/* Bottom pokeballs using level-up-content wrapper */
+.level-up-bar.pokemon .level-up-content {
+    position: relative;
+}
+
+.level-up-bar.pokemon .level-up-content::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+    width: 24px;
+    height: 24px;
+    background: 
+        radial-gradient(
+            white 4px,
+            black 4.5px 5px,
+            white 5.5px 6.5px,
+            black 7px 8.5px,
+            transparent 9px
+        ),
+        linear-gradient(to bottom, #dc0a2d 0 9px, black 9.5px 12px, white 12.5px 100%);
+    border-radius: 50%;
+    border: 2.5px solid black;
+    z-index: 10;
+}
+
+.level-up-bar.pokemon .level-up-content::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    background: 
+        radial-gradient(
+            white 4px,
+            black 4.5px 5px,
+            white 5.5px 6.5px,
+            black 7px 8.5px,
+            transparent 9px
+        ),
+        linear-gradient(to bottom, #dc0a2d 0 9px, black 9.5px 12px, white 12.5px 100%);
+    border-radius: 50%;
+    border: 2.5px solid black;
+    z-index: 10;
 }
 
 /* Falling Emotes */

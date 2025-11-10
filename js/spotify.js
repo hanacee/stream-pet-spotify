@@ -13,6 +13,40 @@ class SpotifyIntegration {
         this.currentTrack = null;
         this.pollInterval = null;
         this.pollRate = 10000; // Check every 10 seconds
+        
+        // Listen for token and connection events from config page
+        window.addEventListener('message', (event) => {
+            // Receive tokens from config page (file:// has separate localStorage)
+            if (event.data && event.data.type === 'spotify_tokens') {
+                console.log('[Spotify] Received tokens from config page');
+                const tokens = event.data.tokens;
+                
+                // Save to this page's localStorage
+                localStorage.setItem('spotify_access_token', tokens.access_token);
+                if (tokens.refresh_token) {
+                    localStorage.setItem('spotify_refresh_token', tokens.refresh_token);
+                }
+                localStorage.setItem('spotify_token_expiry', tokens.token_expiry.toString());
+                
+                // Reload and start polling
+                this.loadTokens();
+                if (this.accessToken && this.tokenExpiry > Date.now()) {
+                    console.log('[Spotify] Tokens saved, starting polling');
+                    this.pet.log('Spotify connected!', 'info');
+                    this.startPolling();
+                }
+            }
+            
+            // Legacy reconnection event (kept for compatibility)
+            if (event.data && event.data.type === 'spotify_connected') {
+                console.log('[Spotify] Connection event received, checking tokens...');
+                this.loadTokens();
+                if (this.accessToken && this.tokenExpiry > Date.now()) {
+                    this.pet.log('Spotify reconnected!', 'info');
+                    this.startPolling();
+                }
+            }
+        });
     }
 
     /**
@@ -22,12 +56,16 @@ class SpotifyIntegration {
         try {
             this.config = petStorage.load().integrations?.spotify;
             
+            console.log('[Spotify] Initializing...', this.config);
+            
             if (!this.config || !this.config.enabled) {
+                console.log('[Spotify] Integration disabled');
                 this.pet.log('Spotify integration disabled');
                 return;
             }
             
             if (!this.config.clientId) {
+                console.log('[Spotify] No Client ID configured');
                 this.pet.log('Spotify Client ID not configured', 'warn');
                 return;
             }
@@ -35,17 +73,29 @@ class SpotifyIntegration {
             // Load saved tokens
             this.loadTokens();
             
+            console.log('[Spotify] Token status:', {
+                hasAccessToken: !!this.accessToken,
+                hasRefreshToken: !!this.refreshToken,
+                tokenExpiry: this.tokenExpiry,
+                now: Date.now(),
+                isValid: this.tokenExpiry && this.tokenExpiry > Date.now()
+            });
+            
             // If we have a valid token, start polling
             if (this.accessToken && this.tokenExpiry > Date.now()) {
+                console.log('[Spotify] Starting polling with valid token');
                 this.pet.log('Spotify connected with saved token', 'info');
                 this.startPolling();
             } else if (this.refreshToken) {
                 // Try to refresh the token
+                console.log('[Spotify] Token expired, attempting refresh');
                 await this.refreshAccessToken();
             } else {
+                console.log('[Spotify] No valid tokens, please authenticate');
                 this.pet.log('Spotify: Please authenticate via config panel', 'info');
             }
         } catch (error) {
+            console.error('[Spotify] Init error:', error);
             this.pet.log(`Spotify init error: ${error.message}`, 'error');
         }
     }
@@ -150,6 +200,8 @@ class SpotifyIntegration {
             clearInterval(this.pollInterval);
         }
         
+        console.log('[Spotify] Starting polling (interval: ' + this.pollRate + 'ms)');
+        
         // Poll immediately
         this.checkNowPlaying();
         
@@ -173,18 +225,25 @@ class SpotifyIntegration {
      * Check currently playing track
      */
     async checkNowPlaying() {
-        if (!this.accessToken) return;
+        if (!this.accessToken) {
+            console.log('[Spotify] No access token available');
+            return;
+        }
         
         try {
+            console.log('[Spotify] Checking now playing...');
             const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
                 headers: {
                     'Authorization': `Bearer ${this.accessToken}`
                 }
             });
             
+            console.log(`[Spotify] API Response Status: ${response.status}`);
+            
             if (response.status === 401) {
                 // Token expired
                 this.pet.log('Spotify token expired', 'warn');
+                console.log('[Spotify] Token expired, stopping polling');
                 this.stopPolling();
                 if (this.refreshToken) {
                     await this.refreshAccessToken();
@@ -192,8 +251,18 @@ class SpotifyIntegration {
                 return;
             }
             
-            if (response.status === 204 || !response.ok) {
+            if (response.status === 204) {
                 // Nothing playing
+                console.log('[Spotify] Nothing currently playing (204)');
+                if (this.currentTrack) {
+                    this.currentTrack = null;
+                    this.onTrackChange(null);
+                }
+                return;
+            }
+            
+            if (!response.ok) {
+                console.log(`[Spotify] API Error: ${response.status} ${response.statusText}`);
                 if (this.currentTrack) {
                     this.currentTrack = null;
                     this.onTrackChange(null);
@@ -202,6 +271,7 @@ class SpotifyIntegration {
             }
             
             const data = await response.json();
+            console.log('[Spotify] API Response:', data);
             
             if (data.item && data.is_playing) {
                 const track = {
@@ -214,16 +284,25 @@ class SpotifyIntegration {
                     genres: [] // Genre info requires additional API call
                 };
                 
+                console.log(`[Spotify] Track detected: ${track.artist} - ${track.name}`);
+                
                 // Check if track changed
                 if (!this.currentTrack || this.currentTrack.id !== track.id) {
+                    console.log('[Spotify] Track changed, triggering onTrackChange');
                     this.currentTrack = track;
                     this.onTrackChange(track);
+                } else {
+                    console.log('[Spotify] Same track still playing');
                 }
             } else if (this.currentTrack) {
+                console.log('[Spotify] Playback stopped or paused');
                 this.currentTrack = null;
                 this.onTrackChange(null);
+            } else {
+                console.log('[Spotify] No track playing (is_playing: false or no item)');
             }
         } catch (error) {
+            console.error('[Spotify] API error:', error);
             this.pet.log(`Spotify API error: ${error.message}`, 'error');
         }
     }
@@ -234,6 +313,18 @@ class SpotifyIntegration {
     onTrackChange(track) {
         if (track) {
             this.pet.log(`🎵 Now playing: ${track.artist} - ${track.name}`, 'info');
+            
+            // Show message about the track
+            const messages = [
+                `🎵 Now playing: ${track.name} by ${track.artist}!`,
+                `🎶 Ooh, ${track.name}! I love this one!`,
+                `♪ Jamming to ${track.artist}!`,
+                `🎼 Great choice! ${track.name}`,
+                `🎵 ${track.artist} - ${track.name}`
+            ];
+            
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            this.pet.showMessage(message, 5000);
             
             // React to genre if enabled
             if (this.config.reactToGenres) {

@@ -72,6 +72,39 @@ The configuration interface includes a built-in preview system for instant testi
 
 **Important Note:** Due to browser security with the `file://` protocol, the preview and main page have separate localStorage instances. The "Sync to Preview" button uses `postMessage` to transfer settings from the config page to the preview iframe, allowing you to test changes before they appear in OBS. Once you're happy with your changes, they'll automatically be used by OBS's browser source.
 
+**Cross-Window Communication:**
+
+The Stream Pet uses `postMessage` API for secure communication between windows:
+
+**Config ↔ Preview:**
+- Config page sends settings updates to preview iframe
+- Preview iframe receives and applies settings in real-time
+- Enables instant testing without page reload
+
+**Config ↔ Spotify Callback:**
+- Callback page requests `code_verifier` from config page
+- Config responds with PKCE verification code
+- Callback sends tokens back after successful authentication
+- Config stores tokens and notifies pet page
+
+**Config ↔ Pet Page (OBS):**
+- Config sends `spotify_connected` event when Spotify authenticates
+- Pet page receives event and reloads Spotify integration
+- Enables immediate track polling without manual refresh
+
+**Message Types:**
+- `sync_to_preview`: Transfer config settings to preview
+- `request_code_verifier`: PKCE authentication request
+- `code_verifier_response`: PKCE verification code response
+- `spotify_tokens`: Access and refresh token delivery
+- `spotify_connected`: Integration reload trigger
+
+**Security Considerations:**
+- postMessage uses `window.opener` for callback communication
+- Target origin '*' used for localhost/file:// compatibility
+- Tokens only stored in localStorage (browser-local)
+- No credentials sent over network (PKCE ensures security)
+
 ### File Structure
 ```
 Stream Pet/
@@ -215,6 +248,55 @@ The pet supports four different sizing methods to give you maximum flexibility:
 - **Click Animation**: State to trigger on click
 - **Click Particles**: Show particles on click
 
+#### Message Bubble Styles
+
+Customize the appearance of speech bubbles that appear when the pet speaks:
+
+**Available Styles:**
+- **Default**: Standard bubble design with rounded corners
+- **Neon Cyberpunk**: Futuristic glowing borders
+- **Vaporwave**: Retro 80s/90s aesthetic
+- **Cute**: Soft, friendly appearance
+- **Manga**: Comic book style with sharp edges
+- **Elemental Styles**: Fiery, Ice, Wind, Earth, Water, Lightning
+- **Gothic**: Dark, dramatic styling
+- **Terrafae**: Fantasy theme with white text and MedievalSharp font
+- **Pommie**: Cat-themed with decorative ear elements
+- **Pokemon**: Game Boy-inspired pixel-art border with pokeballs
+
+**Pokemon GameBoy Style Details:**
+- Classic pixel-art border created with CSS gradients
+- Four decorative pokeballs positioned at each corner
+- Monospace font (Courier New/Consolas) for authentic retro feel
+- Black borders with white/gray background (#f8f8f8)
+- Inner shadow for depth effect
+- Corner decorations: Red/white pokeballs with center button detail
+
+**Terrafae Fantasy Style Details:**
+- White text (#ffffff) for high contrast
+- MedievalSharp Google Font for fantasy aesthetic
+- Fallback fonts: Papyrus, Georgia, serif
+- Adjusted text shadow for better readability
+- Matches the Terrafae level-up bar styling
+
+**Pommie Cat Style Details:**
+- Cat ear decorations using ::before/::after pseudo-elements
+- Triangular ears positioned at the top of bubbles
+- Matches the Pommie level-up bar styling with ear accents
+- Playful, pet-themed appearance
+
+**Configuration:**
+1. Go to Pet Settings → Appearance
+2. Select bubble style from dropdown
+3. Style applies to all messages (chat, events, commands)
+4. Automatically syncs with matching level-up bar style
+
+**Technical Notes:**
+- Styles use CSS classes applied to `.message-bubble` and `.bubble-content`
+- Pokeball decorations use ::before/::after pseudo-elements
+- Some styles (Pokemon, Pommie) require parent container styling for all decorative elements
+- Google Fonts are imported automatically for Terrafae style
+
 ### Events System
 
 Events trigger automatically when connected to Twitch:
@@ -351,55 +433,95 @@ EventSub provides real-time event notifications:
 3. Fill in:
    - **App Name**: Stream Pet
    - **App Description**: Interactive stream pet
-   - **Redirect URI**: See step 2
+   - **Redirect URI**: `https://hanacee.github.io/stream-pet-spotify/spotify-callback.html` (recommended)
 4. Click "Create"
 5. Copy **Client ID**
 
-#### Step 2: Upload Callback Page (Recommended)
-The included `spotify-callback.html` provides a branded OAuth experience.
+#### Step 2: Configure Redirect URI
+The Stream Pet uses **PKCE (Proof Key for Code Exchange)** for secure OAuth authentication without requiring a client secret.
 
-**GitHub Pages Hosting:**
-1. Create [GitHub account](https://github.com) (free)
-2. Create new repository (name: `stream-pet`, make it Public)
-3. Upload `spotify-callback.html` to repository
-4. Go to Settings → Pages
-5. Enable Pages from `main` branch
-6. Your callback URL: `https://YOUR-USERNAME.github.io/stream-pet/spotify-callback.html`
-
-**Alternative:**
-- Upload to any web host
-- Use `https://example.com/callback` (works but shows error page)
-
-#### Step 3: Configure Spotify App
-1. In Spotify Dashboard, click your app → Settings
+**Recommended Setup (Uses Hosted Callback):**
+1. In Spotify Dashboard, go to your app → Settings
 2. Click "Edit Settings"
-3. Under "Redirect URIs":
-   - Add your callback URL exactly
-   - Click "Add"
-   - Click "Save" at bottom
-4. **Important**: Wait 30 seconds for changes to propagate
+3. Under "Redirect URIs", add:
+   ```
+   https://hanacee.github.io/stream-pet-spotify/spotify-callback.html
+   ```
+4. Click "Add" then "Save"
+5. **Important**: Wait 30 seconds for changes to propagate
 
-#### Step 4: Configure in Stream Pet
+**Alternative (Self-Hosted Callback):**
+- Upload `spotify-callback.html` to your own web hosting
+- Add your URL to Spotify app settings (must be HTTPS)
+- Example: `https://yourdomain.com/spotify-callback.html`
+
+**PKCE Flow Benefits:**
+- No client secret required (more secure for browser apps)
+- Uses code_verifier and code_challenge for verification
+- Industry-standard OAuth 2.0 extension
+- Replaced deprecated Implicit Grant flow
+
+#### Step 3: Configure in Stream Pet
 1. Open Config → Integrations → Spotify
 2. Enable Spotify Integration
 3. Paste **Client ID**
 4. Enter **Redirect URI** (must match Spotify Dashboard exactly)
 5. Click "Connect Spotify"
-6. Authorize on Spotify
-7. Copy token from callback page
-8. Paste and click "Complete Login"
+6. You'll be redirected to Spotify to authorize
+7. After authorizing, the callback page will display your tokens
+8. Tokens are automatically saved via postMessage communication
+
+**Authentication Process:**
+1. Config page generates random `code_verifier` (128 characters)
+2. Creates SHA-256 hash as `code_challenge`
+3. Stores `code_verifier` in localStorage
+4. Redirects to Spotify with `code_challenge`
+5. User authorizes on Spotify
+6. Spotify redirects to callback page with authorization `code`
+7. Callback page retrieves `code_verifier` via postMessage
+8. Exchanges `code` + `code_verifier` for access token
+9. Tokens sent back to config page and stored
+10. Pet page automatically reloads Spotify integration
 
 #### Spotify Features
-- **Now Playing**: Pet reacts to currently playing music
-- **Genre Reactions**: Different animations for different genres
-- **Playlist Changes**: Trigger events on song changes
 
-**Genre Animations:**
+**Now Playing Announcements:**
+When a track changes, the pet displays a random message:
+- `🎵 Now playing: [song] by [artist]!`
+- `🎶 Ooh, [song]! I love this one!`
+- `♪ Jamming to [artist]!`
+- `🎼 Great choice! [song]`
+- `🎵 [artist] - [song]`
+
+Messages appear in the configured speech bubble style and last 5 seconds by default.
+
+**Track Polling:**
+- Checks currently playing track every 10 seconds
+- Only announces when track changes
+- Displays artist and song name
+- Console logs full track details for debugging
+
+**Token Management:**
+- Access tokens last 1 hour
+- Refresh tokens automatically renew access (implementation in progress)
+- Re-authentication required when tokens expire
+- Status displayed in Integrations → Spotify section
+
+**Genre Reactions (Optional):**
 Configure in Integrations → Spotify → Genre Reactions:
 - Rock → headbang animation
 - Electronic → dance animation
 - Classical → calm sway
+- Jazz → smooth groove
+- Hip-Hop → energetic bounce
+- Pop → cheerful wave
 - And more...
+
+**Configuration Options:**
+- Enable/disable track announcements
+- Configure announcement message duration
+- Set custom animations per genre
+- Toggle debug logging in console
 
 ### StreamElements / Streamlabs Integration
 
@@ -516,11 +638,37 @@ Epic animation when evolving:
 
 #### Level Up Bar
 Configure the progress bar:
-- **Style**: Classic, modern, minimal, glow, neon
+- **Style**: Classic, modern, minimal, glow, neon, terrafae, pommie, pokemon
 - **Position**: Top, bottom, left, right
 - **Offset Y**: Fine-tune vertical position
 - **Duration**: Display time (ms)
 - **Text Size**: Font size (px)
+
+**Special Level-Up Bar Styles:**
+
+**Pokemon Style:**
+- Pixel-art aesthetic matching GameBoy theme
+- Four pokeballs positioned at corners
+- Sharp corners (no border-radius) for retro look
+- Black borders with classic color scheme
+- Pokeballs positioned at -14px offset for proper alignment
+
+**Terrafae Style:**
+- White text for fantasy theme consistency
+- MedievalSharp font matching speech bubbles
+- Elegant, fantasy-inspired appearance
+
+**Pommie Style:**
+- Cat ear decorations at top of bar
+- Triangular ::before/::after pseudo-elements
+- Playful, pet-themed design
+- Matches speech bubble styling
+
+**Configuration:**
+- Level-up bar style automatically matches selected speech bubble style
+- Custom positioning ensures bars don't overlap with pet
+- Duration controls how long bar remains visible after level-up
+
 
 ### Viewer Interaction
 
@@ -912,31 +1060,52 @@ Advanced particle effects:
 **Symptoms:** "INVALID_CLIENT" or connection errors
 
 **Solutions:**
-1. **Redirect URI Not Added**
+1. **PKCE Parameter Order** (Fixed in latest version)
+   - Previous versions had incorrect parameter order in token exchange
+   - Update to latest `spotify-callback.html` if seeing "Invalid client" errors
+   - Correct order: (code, codeVerifier, clientId, redirectUri)
+
+2. **Redirect URI Not Added**
    - Most common issue
    - Go to Spotify Dashboard → App → Settings
    - Edit Settings → Redirect URIs
-   - Add EXACT URL (including https://)
+   - Add EXACT URL: `https://hanacee.github.io/stream-pet-spotify/spotify-callback.html`
    - Click "Add" then "Save"
    - Wait 30-60 seconds
 
-2. **URL Mismatch**
+3. **URL Mismatch**
    - Config redirect URI must match Spotify Dashboard exactly
-   - Check for typos, protocols, trailing slashes
+   - Check for typos, protocols (https://), trailing slashes
+   - Case-sensitive matching
    
-3. **Token Expired**
-   - Spotify tokens last 1 hour
+4. **Token Expired**
+   - Spotify access tokens last 1 hour
+   - Refresh tokens automatically renew (when implemented)
    - Re-authenticate when expired
    - Error will show in config status
 
-4. **Callback Page Not Loading**
-   - Verify callback HTML is uploaded correctly
-   - Test by visiting URL directly
-   - Check for 404 errors
+5. **Callback Page Communication Failure**
+   - Ensure popup blocker didn't block Spotify authorization
+   - Callback page uses postMessage to send tokens back
+   - Check browser console for "Failed to get code_verifier" errors
+   - Try opening callback page directly to test hosting
 
-5. **CORS Issues**
-   - If hosting callback page, ensure CORS enabled
-   - GitHub Pages handles this automatically
+6. **Code Verifier Storage Issues**
+   - Config page stores code_verifier in localStorage before redirect
+   - Callback retrieves it via postMessage (cross-origin safe)
+   - Clear localStorage and retry if corrupted
+   - Browser security settings may block localStorage for file://
+
+7. **Cross-Origin Restrictions**
+   - File:// protocol can't directly communicate with https://
+   - postMessage used as secure workaround
+   - Ensure callback window isn't closed before token exchange completes
+
+8. **Pet Not Announcing Tracks**
+   - Verify Spotify integration enabled in config
+   - Check that track polling started (console should show "🎵 Now playing")
+   - Ensure message duration isn't 0ms
+   - Try manually triggering test message in Testing tab
 
 #### Events Not Triggering
 
@@ -1352,6 +1521,55 @@ Set in OBS → Settings → Hotkeys for browser source:
 ---
 
 ## Changelog
+
+### Version 1.1.0 (November 10, 2025)
+**Major Updates:**
+- **PKCE OAuth Flow**: Replaced deprecated Implicit Grant with PKCE for Spotify authentication
+  - More secure (no client secret required)
+  - Uses code_verifier and code_challenge
+  - Automatic token exchange via postMessage communication
+  - Fixed parameter order bug in token exchange function
+
+- **Speech Bubble Styles**: Added three new themed bubble styles
+  - **Pokemon**: GameBoy-inspired pixel-art borders with 4 pokeballs in corners
+  - **Terrafae**: Fantasy theme with white text and MedievalSharp Google Font
+  - **Pommie**: Cat-themed with decorative ear elements
+
+- **Level-Up Bar Styles**: Extended styling to match speech bubbles
+  - Pokemon: Sharp corners, pokeball decorations, retro aesthetic
+  - Terrafae: Fantasy font and color scheme
+  - Pommie: Cat ear decorations at top
+
+- **Spotify Track Announcements**: Pet now announces song changes
+  - 5 random message variations
+  - Displays artist and song name
+  - Configurable duration (default 5000ms)
+  - Automatically triggered when track changes
+
+- **postMessage Integration**: Enhanced cross-window communication
+  - Config ↔ Preview: Instant setting synchronization
+  - Config ↔ Callback: Secure PKCE token exchange
+  - Config ↔ Pet: Spotify reconnection without manual reload
+  - Improved security and user experience
+
+- **UI Improvements**:
+  - Fixed dark mode code styling (was white text on light background)
+  - Updated Spotify setup instructions for PKCE workflow
+  - Added troubleshooting for common PKCE issues
+  - Improved callback page with better error messages
+
+**Bug Fixes:**
+- Fixed Pokemon bubble only showing 2 pokeballs (now shows all 4)
+- Fixed Spotify "Invalid client" error (parameter order)
+- Fixed cross-origin localStorage issues with postMessage fallback
+- Fixed level-up bars not respecting custom styles
+
+**Technical Improvements:**
+- CSS pseudo-elements (::before/::after) for decorative elements
+- Google Fonts API integration for custom typography
+- SHA-256 hashing for PKCE code challenges
+- Random message selection with Math.random()
+- Improved error handling in authentication flow
 
 ### Version 1.0.0
 - Initial release

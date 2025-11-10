@@ -37,6 +37,40 @@ class TwitchIntegration {
             sent: 0,
             uniqueChatters: 0
         };
+        
+        // Listen for token events from config page
+        window.addEventListener('message', (event) => {
+            // Receive tokens from config page (file:// has separate localStorage)
+            if (event.data && event.data.type === 'twitch_tokens') {
+                console.log('[Twitch] Received tokens from config page');
+                const { accountType, tokens } = event.data;
+                
+                if (accountType === 'main') {
+                    // Save main account tokens
+                    localStorage.setItem('twitch_access_token', tokens.access_token);
+                    localStorage.setItem('twitch_user_id', tokens.user_id);
+                    localStorage.setItem('twitch_username', tokens.username);
+                    
+                    // Reload and reconnect
+                    this.loadTokens();
+                    if (this.accessToken) {
+                        console.log('[Twitch] Main account tokens saved, reconnecting...');
+                        this.pet.log(`Twitch connected as ${tokens.display_name}!`, 'info');
+                        this.connect();
+                    }
+                } else if (accountType === 'bot') {
+                    // Save bot account tokens
+                    localStorage.setItem('twitch_bot_token', tokens.access_token);
+                    localStorage.setItem('twitch_bot_user_id', tokens.user_id);
+                    localStorage.setItem('twitch_bot_username', tokens.username);
+                    
+                    // Reload bot token
+                    this.loadTokens();
+                    console.log('[Twitch] Bot account tokens saved');
+                    this.pet.log(`Twitch bot connected as ${tokens.display_name}!`, 'info');
+                }
+            }
+        });
     }
 
     /**

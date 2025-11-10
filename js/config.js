@@ -117,6 +117,21 @@ class ConfigManager {
                         localStorage.setItem('spotify_token_expiry', tokenData.token_expiry.toString());
                         localStorage.removeItem('spotify_auth_state');
                         localStorage.removeItem('spotify_code_verifier');
+                        
+                        // Send tokens to preview iframe (index.html has separate localStorage on file://)
+                        const previewIframe = document.getElementById('preview-frame');
+                        if (previewIframe && previewIframe.contentWindow) {
+                            console.log('Sending Spotify tokens to preview iframe...');
+                            previewIframe.contentWindow.postMessage({
+                                type: 'spotify_tokens',
+                                tokens: {
+                                    access_token: tokenData.access_token,
+                                    refresh_token: tokenData.refresh_token,
+                                    token_expiry: tokenData.token_expiry
+                                }
+                            }, '*');
+                        }
+                        
                         updateSpotifyStatus();
                         this.showNotification('✅ Spotify connected successfully!', 'success');
                         console.log('Spotify connection successful!');
@@ -127,6 +142,37 @@ class ConfigManager {
                 } else {
                     console.error('Invalid token data received:', tokenData);
                 }
+            }
+            
+            // Handle Twitch token from callback
+            if (event.data && event.data.type === 'twitch_token') {
+                console.log('Received Twitch token from callback:', event.data);
+                const { accountType, data } = event.data;
+                
+                if (accountType === 'main') {
+                    localStorage.setItem('twitch_access_token', data.access_token);
+                    localStorage.setItem('twitch_user_id', data.user_id);
+                    localStorage.setItem('twitch_username', data.username);
+                    this.showNotification(`✅ Main account connected as ${data.display_name}!`, 'success');
+                } else if (accountType === 'bot') {
+                    localStorage.setItem('twitch_bot_token', data.access_token);
+                    localStorage.setItem('twitch_bot_user_id', data.user_id);
+                    localStorage.setItem('twitch_bot_username', data.username);
+                    this.showNotification(`✅ Bot account connected as ${data.display_name}!`, 'success');
+                }
+                
+                // Send tokens to preview iframe
+                const previewIframe = document.getElementById('preview-frame');
+                if (previewIframe && previewIframe.contentWindow) {
+                    console.log('Sending Twitch tokens to preview iframe...');
+                    previewIframe.contentWindow.postMessage({
+                        type: 'twitch_tokens',
+                        accountType: accountType,
+                        tokens: data
+                    }, '*');
+                }
+                
+                this.updateAuthStatus();
             }
         });
 
@@ -2360,6 +2406,9 @@ class ConfigManager {
             return;
         }
         
+        // Store client ID for callback page to use
+        localStorage.setItem('twitch_client_id', clientId);
+        
         const scopes = [
             'chat:read',
             'chat:edit',
@@ -2369,13 +2418,18 @@ class ConfigManager {
             'moderator:read:followers'
         ].join(' ');
         
+        // Add client_id to state so callback can use it
+        const state = JSON.stringify({ type: 'main', client_id: clientId });
+        
         const authUrl = `https://id.twitch.tv/oauth2/authorize?` +
             `client_id=${clientId}&` +
             `redirect_uri=${encodeURIComponent(redirectUri)}&` +
             `response_type=token&` +
-            `scope=${encodeURIComponent(scopes)}`;
+            `scope=${encodeURIComponent(scopes)}&` +
+            `state=${encodeURIComponent(state)}`;
         
-        window.location.href = authUrl;
+        // Open in new window instead of redirecting current page
+        window.open(authUrl, 'TwitchAuth', 'width=600,height=700');
     }
     
     /**
@@ -2408,19 +2462,26 @@ class ConfigManager {
             return;
         }
         
+        // Store client ID for callback page to use
+        localStorage.setItem('twitch_client_id', clientId);
+        
         const scopes = [
             'chat:read',
             'chat:edit'
         ].join(' ');
+        
+        // Add client_id to state so callback can use it
+        const state = JSON.stringify({ type: 'bot', client_id: clientId });
         
         const authUrl = `https://id.twitch.tv/oauth2/authorize?` +
             `client_id=${clientId}&` +
             `redirect_uri=${encodeURIComponent(redirectUri)}&` +
             `response_type=token&` +
             `scope=${encodeURIComponent(scopes)}&` +
-            `state=bot_account`;
+            `state=${encodeURIComponent(state)}`;
         
-        window.location.href = authUrl;
+        // Open in new window instead of redirecting current page
+        window.open(authUrl, 'TwitchBotAuth', 'width=600,height=700');
     }
     
     /**

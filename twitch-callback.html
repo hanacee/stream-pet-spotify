@@ -183,7 +183,7 @@
                 const params = new URLSearchParams(hash);
                 
                 const accessToken = params.get('access_token');
-                const state = params.get('state');
+                const stateParam = params.get('state');
                 const error = params.get('error');
                 const errorDescription = params.get('error_description');
 
@@ -206,20 +206,43 @@
                     return;
                 }
 
-                // Determine if this is bot or main account
-                const isBotAccount = state === 'bot_account';
-                const accountType = isBotAccount ? 'bot' : 'main';
+                // Parse state to get client ID and account type
+                let clientId = '';
+                let accountType = 'main';
+                
+                if (stateParam) {
+                    try {
+                        const state = JSON.parse(decodeURIComponent(stateParam));
+                        clientId = state.client_id || '';
+                        accountType = state.type || 'main';
+                    } catch (e) {
+                        // Fallback for old state format
+                        if (stateParam === 'bot_account') {
+                            accountType = 'bot';
+                        }
+                        // Try to get client ID from localStorage as fallback
+                        clientId = localStorage.getItem('twitch_client_id') || '';
+                    }
+                }
+
+                if (!clientId) {
+                    showStatus('❌ Missing Client ID', 'error');
+                    showInfo('Could not retrieve Client ID. Please try authenticating again.');
+                    closeBtn.style.display = 'block';
+                    return;
+                }
 
                 // Get user info from Twitch API
                 const userResponse = await fetch('https://api.twitch.tv/helix/users', {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
-                        'Client-Id': localStorage.getItem('twitch_client_id') || ''
+                        'Client-Id': clientId
                     }
                 });
 
                 if (!userResponse.ok) {
-                    throw new Error('Failed to fetch user information from Twitch');
+                    const errorText = await userResponse.text();
+                    throw new Error(`Failed to fetch user information from Twitch: ${userResponse.status} ${errorText}`);
                 }
 
                 const userData = await userResponse.json();
@@ -248,7 +271,7 @@
                 // Show success message
                 showStatus('✅ Authentication Successful!', 'success');
                 showInfo(`
-                    <strong>Account Type:</strong> ${isBotAccount ? 'Bot Account' : 'Main Account'}<br>
+                    <strong>Account Type:</strong> ${accountType === 'bot' ? 'Bot Account' : 'Main Account'}<br>
                     <strong>Username:</strong> ${user.display_name} (@${user.login})<br>
                     <strong>User ID:</strong> ${user.id}<br>
                     <br>
