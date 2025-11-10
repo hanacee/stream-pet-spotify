@@ -585,8 +585,8 @@
                                 
                                 console.log('Got code verifier, exchanging for token...');
                                 
-                                // Exchange code for token
-                                const tokenData = await exchangeCodeForToken(code, clientId, redirectUri, codeVerifier);
+                                // Exchange code for token (correct parameter order: code, codeVerifier, clientId, redirectUri)
+                                const tokenData = await exchangeCodeForToken(code, codeVerifier, clientId, redirectUri);
                                 
                                 // Show success
                                 document.getElementById('success-content').style.display = 'block';
