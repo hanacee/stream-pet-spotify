@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hana_Cee's Stream Pet – Setup Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* ===== Print & Page Setup ===== */
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+    @media print {
+      body {
+        color: #000;
+        background: #fff;
+      }
+      .no-print {
+        display: none !important;
+      }
+      a {
+        color: #000;
+        text-decoration: none;
+      }
+    }
+
+    /* ===== Base Styles ===== */
+    :root {
+      --accent: #a200ff;
+      --accent-soft: rgba(162, 0, 255, 0.08);
+      --gold: #d6a847;
+      --dark: #202125;
+      --border: #ddd;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      color: #222;
+      background: #f6f5fb;
+      margin: 0;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 26px 26px 48px;
+      box-sizing: border-box;
+    }
+
+    header.hero {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid rgba(162, 0, 255, 0.12);
+    }
+
+    header.hero img.brand {
+      max-width: 340px;
+      height: auto;
+      display: block;
+      margin: 0 auto 10px;
+    }
+
+    h1, h2, h3 {
+      color: #131523;
+      margin-top: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      margin-bottom: 0.4rem;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      border-bottom: 1px solid rgba(162, 0, 255, 0.12);
+      padding-bottom: 4px;
+      margin-top: 26px;
+    }
+
+    h3 {
+      font-size: 1.03rem;
+      margin-top: 16px;
+    }
+
+    p {
+      margin: 0.4rem 0 0.7rem;
+    }
+
+    a {
+      color: #a200ff;
+    }
+
+    .tagline {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .callout {
+      background: #fff6ff;
+      border: 1px solid rgba(162, 0, 255, 0.25);
+      border-left: 5px solid #a200ff;
+      border-radius: 8px;
+      padding: 10px 14px 10px;
+      margin: 14px 0;
+      font-size: 0.9rem;
+    }
+
+    .note {
+      background: #f7f7ff;
+      border-left: 4px solid #97a0ff;
+      margin: 14px 0;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+    }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding-left: 0;
+      margin: 10px 0 16px;
+    }
+    .steps li {
+      counter-increment: step;
+      background: #fff;
+      border: 1px solid #ece9ff;
+      border-left: 5px solid #a200ff;
+      border-radius: 7px;
+      padding: 10px 12px 8px 14px;
+      margin-bottom: 10px;
+      position: relative;
+      font-size: 0.92rem;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      right: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      border: 1px solid #ece9ff;
+      color: #a200ff;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-weight: 600;
+      font-size: 0.7rem;
+    }
+
+    .two-col {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin: 10px 0;
+    }
+
+    .mini-title {
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.02em;
+      color: #888;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    ul {
+      padding-left: 18px;
+    }
+
+    .img-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 18px 0 6px;
+    }
+
+    .branding-img {
+      max-height: 140px;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    footer {
+      margin-top: 28px;
+      border-top: 1px solid #eee;
+      padding-top: 8px;
+      font-size: 0.7rem;
+      text-align: center;
+      color: #999;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .page {
+        padding: 16px 14px 40px;
+      }
+      header.hero img.brand {
+        max-width: 260px;
+      }
+      .steps li::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <!-- use your provided branding images; keep filenames as they were shared -->
+      <img src="Hana Cee.png" alt="Hana_Cee Logo" class="brand" />
+      <h1>Hana_Cee's Stream Pet</h1>
+      <p class="tagline">Quick-start guide for streamers – install, connect, and play ✨</p>
+      <p class="no-print"><strong>Twitch:</strong> <a href="https://twitch.tv/hana_cee" target="_blank">https://twitch.tv/hana_cee</a></p>
+    </header>
+
+    <section id="intro">
+      <h2>1. What this is</h2>
+      <p>
+        This guide turns the technical reference for <strong>Hana_Cee's Stream Pet</strong> into a step-by-step walkthrough for an average-skill OBS user. Follow it in order and you’ll have a cute, clickable pet on stream that reacts to Twitch events like follows, subs, and redeems.
+      </p>
+      <div class="callout">
+        You will need: a Windows/Mac PC with OBS Studio, the Stream Pet folder extracted somewhere permanent (e.g. <code>C:\StreamStuff\HanaCeePet</code>), and your Twitch account.
+      </div>
+    </section>
+
+    <section id="files">
+      <h2>2. Get the files ready</h2>
+      <ol class="steps">
+        <li><strong>Extract the download.</strong> Unzip the folder you got for the pet. Put it somewhere you won’t move later (OBS doesn’t like it when the file disappears).</li>
+        <li><strong>Remember the folder.</strong> Inside you should see files like <code>index.html</code> and <code>config.html</code>. <em>index.html</em> is what OBS shows. <em>config.html</em> is where you change settings.</li>
+        <li><strong>Optional:</strong> keep your custom pet images or sounds inside the same main folder to avoid path issues.</li>
+      </ol>
+      <p class="note">If you move the folder later, you must update the file path in OBS.</p>
+    </section>
+
+    <section id="obs">
+      <h2>3. Add it to OBS (the display part)</h2>
+      <ol class="steps">
+        <li>Open <strong>OBS Studio</strong>.</li>
+        <li>In the <strong>Sources</strong> box, click <strong>+</strong> → <strong>Browser</strong>. Name it something like <em>HanaCee_Pet</em>.</li>
+        <li>Check <strong>Local file</strong>, then click <strong>Browse…</strong> and pick the <strong><code>index.html</code></strong> inside your pet folder.</li>
+        <li>Set width and height to match your canvas (usually <strong>1920 x 1080</strong>).</li>
+        <li>Click <strong>OK</strong>. You should see the pet area appear. If it’s blank, keep going — we’ll configure it next.</li>
+      </ol>
+      <p class="note">You can enable “Refresh browser when scene becomes active” to force the pet to reload whenever you switch scenes – useful while testing.</p>
+    </section>
+
+    <section id="config">
+      <h2>4. Open the configuration panel</h2>
+      <p>You can configure the pet in two ways. Use whichever is easier:</p>
+      <div class="two-col">
+        <div class="card">
+          <div class="mini-title">Method A – In OBS</div>
+          <p>
+            Right-click your pet browser source → <strong>Interact</strong>. A mini browser pops up. Go to <code>config.html</code> from there (sometimes it’s linked in the pet).
+          </p>
+        </div>
+        <div class="card">
+          <div class="mini-title">Method B – In your normal browser</div>
+          <p>
+            Double-click <strong><code>config.html</code></strong> in the pet folder. This is usually easier because you get full tabs, testing buttons, and can see if Twitch connects properly.
+          </p>
+        </div>
+      </div>
+      <p>The config screen has lots of tabs, but for a basic setup you only need <strong>Pet Settings</strong> and <strong>Twitch</strong> to start.</p>
+    </section>
+
+    <section id="basic-look">
+      <h2>5. Make it look like your pet</h2>
+      <p>In <strong>Pet Settings</strong> (or similar) set the basics:</p>
+      <ul>
+        <li><strong>Name:</strong> what you want alerts to show (e.g. “Hana’s Buddy”).</li>
+        <li><strong>Image:</strong> pick one of your included images or your own. You can use the ones you shared:
+          <ul>
+            <li><code>hana.png</code> – chibi mascot</li>
+            <li><code>StreamPet.png</code> – cute bird with glasses</li>
+          </ul>
+        </li>
+        <li><strong>Size:</strong> if it’s too big/small, change “size mode” to <em>Pixels</em> and try something like <strong>300 px</strong>.</li>
+        <li><strong>Position:</strong> set it to the lower-left or lower-right of your screen so it doesn’t cover your gameplay.</li>
+      </ul>
+      <p class="note">If OBS shows a different size than the config preview, refresh the OBS browser source.</p>
+    </section>
+
+    <section id="twitch">
+      <h2>6. Connect it to Twitch (so it reacts!)</h2>
+      <p>This part lets <strong>Hana_Cee’s Stream Pet</strong> listen to your chat and events.</p>
+      <ol class="steps">
+        <li>In <strong>config.html</strong> go to the tab called <strong>Twitch</strong> (or Integration / Twitch).</li>
+        <li>Type your channel name <strong>without</strong> the <code>#</code>. Example: <code>hana_cee</code>.</li>
+        <li>Click the button to <strong>Authenticate</strong> or <strong>Connect to Twitch</strong>.</li>
+        <li>A Twitch window opens. Log in and click <strong>Authorize</strong>. This gives the pet permission to see your events.</li>
+        <li>Go back to the config page. It should say something like <em>Connected</em> or show your status.</li>
+        <li>Find the <strong>Test</strong> area on the config page and click <strong>Test Follow</strong> or <strong>Test Sub</strong>. Your pet in OBS should react.</li>
+      </ol>
+      <p class="note">If it says “redirect URL mismatch,” double-check the URL field in the Twitch tab matches what you put in your Twitch developer app. That’s a common hiccup.</p>
+    </section>
+
+    <section id="use">
+      <h2>7. How to use it during stream</h2>
+      <p>Once it’s in OBS and connected, most things are automatic:</p>
+      <ul>
+        <li><strong>New follow / sub / bits:</strong> pet plays the animation you picked.</li>
+        <li><strong>Chat commands:</strong> viewers can type things like <code>!pet</code>, <code>!pet dance</code>, or whatever is listed in the Commands tab.</li>
+        <li><strong>You:</strong> you can trigger tests from the config anytime, even while live.</li>
+      </ul>
+      <p>If you want to add your own command (e.g. <code>!birb</code> to make the bird spin):</p>
+      <ol class="steps">
+        <li>Open the <strong>Commands</strong> tab.</li>
+        <li>Click <strong>Add Command</strong>.</li>
+        <li>Set the command name (without <code>!</code> usually the pet adds that).</li>
+        <li>Pick the animation/state you want.</li>
+        <li>Save. Test from chat.</li>
+      </ol>
+    </section>
+
+    <section id="optional">
+      <h2>8. Optional: extras you can explore later</h2>
+      <p>These are in the technical guide but you don’t have to set them up on day one:</p>
+      <ul>
+        <li><strong>Spotify reactions:</strong> pet dances differently based on the music.</li>
+        <li><strong>Seasonal modes:</strong> automatic Halloween/Christmas themes.</li>
+        <li><strong>Growth / XP:</strong> pet “levels up” when your chat interacts.</li>
+        <li><strong>StreamElements / Streamlabs:</strong> connect their tokens to make donations trigger the pet.</li>
+      </ul>
+      <p>Everything saves to your browser’s <em>local storage</em>, so export your settings once you like them.</p>
+    </section>
+
+    <section id="troubleshoot">
+      <h2>9. Quick troubleshooting</h2>
+      <h3>Pet is blank in OBS</h3>
+      <ul>
+        <li>Right-click the source → <strong>Properties</strong> → make sure it points to <code>index.html</code> in the correct folder.</li>
+        <li>Click <strong>Refresh cache of current page</strong>.</li>
+        <li>Make sure width/height aren’t 0.</li>
+      </ul>
+
+      <h3>Settings don’t stick</h3>
+      <ul>
+        <li>Click the <strong>Save / Apply</strong> button in config.</li>
+        <li>Try opening <code>config.html</code> in Chrome/Edge if another browser blocks local saving.</li>
+        <li>Use the Export option to keep a backup.</li>
+      </ul>
+
+      <h3>Twitch won’t connect</h3>
+      <ul>
+        <li>Re-authenticate in the Twitch tab.</li>
+        <li>Make sure the Redirect / Callback URL in Twitch matches what the pet asks for.</li>
+        <li>Test again with the built-in “Test Follow” buttons.</li>
+      </ul>
+    </section>
+
+    <section id="branding">
+      <div class="img-row">
+        <!-- these will show up in the HTML, and will also appear when printed if the PDF capture keeps images -->
+        <img src="hana.png" alt="Hana Chibi" class="branding-img" />
+        <img src="StreamPet.png" alt="Stream Pet Bird" class="branding-img" />
+      </div>
+     </section>
+
+    <footer>
+      Guide based on the technical reference for <strong>Hana_Cee’s Stream Pet</strong>. For help or to see it in action, visit
+      <a href="https://twitch.tv/hana_cee">twitch.tv/hana_cee</a>.
+    </footer>
+  </div>
+</body>
+</html>

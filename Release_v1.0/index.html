@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Stream Pet</title>
+    <link rel="stylesheet" href="css/pet.css">
+</head>
+<body>
+    <!-- Pet Container -->
+    <div id="pet-container">
+        <img id="pet-image" src="" alt="Stream Pet" class="pet-image">
+        
+        <!-- Message Bubble -->
+        <div id="message-bubble" class="message-bubble hidden">
+            <div class="bubble-content">
+                <span id="bubble-text"></span>
+            </div>
+            <div class="bubble-tail"></div>
+        </div>
+    </div>
+
+    <!-- Particle Container -->
+    <div id="particle-container"></div>
+
+    <!-- Debug Panel (hidden by default) -->
+    <div id="debug-panel" class="debug-panel hidden">
+        <div class="debug-header">Stream Pet Debug</div>
+        <div id="debug-log" class="debug-log"></div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="js/tmi.min.js"></script>
+    
+    <!-- JavaScript -->
+    <script src="js/storage.js"></script>
+    <script src="js/enhancements.js"></script>
+    <script src="js/advanced-animations.js"></script>
+    <script src="js/viewer-interaction.js"></script>
+    <script src="js/pet.js"></script>
+    <script src="js/twitch.js"></script>
+    <script src="js/spotify.js"></script>
+</body>
+</html>
+

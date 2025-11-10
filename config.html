@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Pet Configuration</title>
+    <link rel="icon" type="image/x-icon" href="Images/favicon.ico">
+    <link rel="stylesheet" href="css/config.css">
+</head>
+<body>
+    <div class="config-container">
+        <!-- Header -->
+        <header class="config-header">
+            <div class="header-left">
+                <a href="https://twitch.tv/hana_cee" target="_blank" class="header-logo" title="Visit Hana_Cee on Twitch">
+                    <img src="Images/hana-avatar.png" alt="Hana Cee" />
+                </a>
+                <h1>🐾 Hana_Cee's Stream Pet Configuration</h1>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="btn btn-secondary" title="Toggle Dark/Light Mode">
+                    <span class="theme-icon">☀️</span>
+                </button>
+                <button id="save-config" class="btn btn-primary">💾 Save Configuration</button>
+                <button id="sync-preview" class="btn btn-secondary">🔄 Sync to Preview</button>
+                <button id="popout-preview" class="btn btn-secondary">🗗 Pop Out Preview</button>
+                <button id="reset-config" class="btn btn-danger">🔄 Reset to Defaults</button>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="pet-settings">Pet Settings</button>
+            <button class="tab-btn" data-tab="events">Events</button>
+            <button class="tab-btn" data-tab="commands">Commands</button>
+            <button class="tab-btn" data-tab="states">States</button>
+            <button class="tab-btn" data-tab="growth">Growth</button>
+            <button class="tab-btn" data-tab="viewer-interaction">Viewer Interaction</button>
+            <button class="tab-btn" data-tab="greetings">Greetings</button>
+            <button class="tab-btn" data-tab="seasonal">Seasonal</button>
+            <button class="tab-btn" data-tab="animations">Advanced Animations</button>
+            <button class="tab-btn" data-tab="integrations">Integrations</button>
+            <button class="tab-btn" data-tab="twitch">Twitch</button>
+            <button class="tab-btn" data-tab="testing">Testing</button>
+            <button class="tab-btn" data-tab="import-export">Import/Export</button>
+            <button class="tab-btn" data-tab="analytics">Analytics</button>
+        </nav>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            
+            <!-- Pet Settings Tab -->
+            <div id="pet-settings" class="tab-pane active">
+                <h2>Pet Configuration</h2>
+                
+                <!-- Basic Settings Section -->
+                <div class="form-section">
+                    <h3>🎯 Basic Settings</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="pet-name">Pet Name</label>
+                            <input type="text" id="pet-name" placeholder="Stream Pet">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pet-size-mode">Size Mode</label>
+                            <select id="pet-size-mode">
+                                <option value="pixels">Fixed Pixels</option>
+                                <option value="percent">Percentage of Screen</option>
+                                <option value="auto">Auto (Natural Size)</option>
+                                <option value="scale">Scale Factor</option>
+                            </select>
+                            <small>How pet size is calculated</small>
+                        </div>
+
+                        <div class="form-group" id="size-pixels-group">
+                            <label for="pet-width">Width (px)</label>
+                            <input type="number" id="pet-width" min="50" max="2000" value="200">
+                        </div>
+
+                        <div class="form-group" id="size-pixels-group-height">
+                            <label for="pet-height">Height (px)</label>
+                            <input type="number" id="pet-height" min="50" max="2000" value="200">
+                        </div>
+
+                        <div class="form-group" id="size-percent-group" style="display: none;">
+                            <label for="pet-width-percent">Width (% of screen)</label>
+                            <input type="number" id="pet-width-percent" min="1" max="100" value="10" step="0.5">
+                        </div>
+
+                        <div class="form-group" id="size-percent-group-height" style="display: none;">
+                            <label for="pet-height-percent">Height (% of screen)</label>
+                            <input type="number" id="pet-height-percent" min="1" max="100" value="10" step="0.5">
+                        </div>
+
+                        <div class="form-group" id="size-scale-group" style="display: none;">
+                            <label for="pet-scale">Scale Factor</label>
+                            <input type="number" id="pet-scale" min="0.1" max="5" value="1" step="0.1">
+                            <small>1.0 = natural size, 2.0 = double size, 0.5 = half size</small>
+                        </div>
+
+                        <div class="form-group checkbox-group" id="maintain-aspect-group">
+                            <label>
+                                <input type="checkbox" id="maintain-aspect" checked>
+                                Maintain Aspect Ratio
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pet-x">Position X (%)</label>
+                            <input type="number" id="pet-x" min="0" max="100" value="50">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pet-y">Position Y (%)</label>
+                            <input type="number" id="pet-y" min="0" max="100" value="50">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pet-opacity">Opacity</label>
+                            <input type="range" id="pet-opacity" min="0" max="1" step="0.1" value="1">
+                            <span id="opacity-value">1.0</span>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="flip-horizontal">
+                                Flip Horizontally
+                            </label>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="debug-mode">
+                                Debug Mode
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <button class="btn btn-primary" id="configure-position-btn" type="button">
+                            📐 Configure Position & Size Visually
+                        </button>
+                        <small>Opens a new window where you can drag and resize the pet, then save</small>
+                    </div>
+                </div>
+
+                <!-- Appearance Section -->
+                <div class="form-section">
+                    <h3>🎨 Appearance</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="default-image">Default Image</label>
+                            <input type="hidden" id="default-image">
+                            <button class="btn btn-primary" onclick="openImagePicker('default-image', 'Default Image')">🖼️ Image Settings</button>
+                            <small>💡 Set images for growth stages and holiday modes</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blink-image">Blink Image</label>
+                            <input type="hidden" id="blink-image">
+                            <button class="btn btn-primary" onclick="openImagePicker('blink-image', 'Blink Image')">🖼️ Image Settings</button>
+                            <small>💡 Set images for growth stages and holiday modes</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blink-interval">Blink Interval (ms)</label>
+                            <input type="number" id="blink-interval" min="1000" step="100" value="5000">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blink-duration">Blink Duration (ms)</label>
+                            <input type="number" id="blink-duration" min="100" step="50" value="200">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bubble-style">Message Bubble Style</label>
+                            <select id="bubble-style">
+                                <option value="default">Default (Classic)</option>
+                                <option value="neon-cyberpunk">Neon Cyberpunk</option>
+                                <option value="vaporwave">Vaporwave</option>
+                                <option value="cute">Cute</option>
+                                <option value="manga">Manga</option>
+                                <option value="fiery">Fiery</option>
+                                <option value="ice">Ice</option>
+                                <option value="wind">Wind</option>
+                                <option value="earth">Earth</option>
+                                <option value="water">Water</option>
+                                <option value="lightning">Lightning</option>
+                                <option value="gothic">Gothic Shadow</option>
+                                <option value="terrafae">Terrafae</option>
+                                <option value="pommie">Pommie (Cat)</option>
+                                <option value="pokemon">Pokemon</option>
+                            </select>
+                            <button class="btn btn-sm" onclick="testBubbleMessage()" style="margin-top: 0.5rem;">💬 Test Message</button>
+                            <small>💡 Choose a visual style for message bubbles</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sound Settings Section -->
+                <div class="form-section">
+                    <h3>🔊 Sound Settings</h3>
+                    <div class="form-grid">
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="enable-sounds">
+                                Enable Sound Effects
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sound-volume">Sound Volume</label>
+                            <input type="range" id="sound-volume" min="0" max="1" step="0.1" value="0.5">
+                            <span id="volume-value">50%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Particle Effects Section -->
+                <div class="form-section">
+                    <h3>✨ Particle Effects</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="enable-particles">
+                            Enable Particle Effects
+                        </label>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="particle-size">Particle Size</label>
+                            <input type="range" id="particle-size" min="20" max="60" value="40" step="5">
+                            <span id="particle-size-value">40px</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="particle-count">Particle Count</label>
+                            <input type="range" id="particle-count" min="5" max="30" value="10" step="1">
+                            <span id="particle-count-value">10</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="particle-spread">Spread Radius</label>
+                            <input type="range" id="particle-spread" min="50" max="300" value="150" step="10">
+                            <span id="particle-spread-value">150px</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="particle-speed">Movement Speed</label>
+                            <input type="range" id="particle-speed" min="1" max="10" value="5" step="1">
+                            <span id="particle-speed-value">5</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="particle-lifetime">Lifetime (ms)</label>
+                            <input type="number" id="particle-lifetime" min="500" max="5000" value="2000" step="100">
+                            <small>How long particles stay on screen</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="particle-gravity">Gravity Effect</label>
+                            <input type="range" id="particle-gravity" min="0" max="2" value="0.5" step="0.1">
+                            <span id="particle-gravity-value">0.5</span>
+                        </div>
+                    </div>
+                    <button id="test-particles" class="btn btn-secondary">✨ Test Particles</button>
+                </div>
+
+                <!-- Idle Animations Section -->
+                <div class="form-section">
+                    <h3>🎭 Idle Animations</h3>
+                    <div class="form-grid">
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="enable-idle-animations">
+                                Enable Idle Animations
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="idle-interval">Idle Animation Interval (seconds)</label>
+                            <input type="number" id="idle-interval" min="10" max="300" value="30">
+                            <small>How often the pet might perform idle animations</small>
+                        </div>
+                        
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Idle Animations</label>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px;">
+                                <label style="font-weight: normal;">
+                                    <input type="checkbox" id="idle-bounce" checked> Bounce
+                                </label>
+                                <label style="font-weight: normal;">
+                                    <input type="checkbox" id="idle-wiggle" checked> Wiggle
+                                </label>
+                                <label style="font-weight: normal;">
+                                    <input type="checkbox" id="idle-float" checked> Float
+                                </label>
+                                <label style="font-weight: normal;">
+                                    <input type="checkbox" id="idle-spin"> Spin
+                                </label>
+                                <label style="font-weight: normal;">
+                                    <input type="checkbox" id="idle-sway" checked> Sway
+                                </label>
+                                <label style="font-weight: normal;">
+                                    <input type="checkbox" id="idle-hop" checked> Hop
+                                </label>
+                            </div>
+                            <small>Select which animations the pet can perform when idle</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Click Interaction Section -->
+                <div class="form-section">
+                    <h3>🖱️ Click Interaction</h3>
+                    <div class="form-grid">
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="enable-click">
+                                Enable Click Interaction
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="click-message">Click Message</label>
+                            <input type="text" id="click-message" placeholder="You clicked me! 😊">
+                            <small>Message shown when the pet is clicked</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="click-animation">Click Animation</label>
+                            <select id="click-animation">
+                                <option value="none">None</option>
+                                <option value="bounce" selected>Bounce</option>
+                                <option value="wiggle">Wiggle</option>
+                                <option value="spin">Spin</option>
+                                <option value="float">Float</option>
+                                <option value="shake">Shake</option>
+                                <option value="sway">Sway</option>
+                                <option value="jump">Jump</option>
+                                <option value="hop">Hop</option>
+                                <option value="pulse">Pulse</option>
+                                <option value="slide-left">Slide Left</option>
+                                <option value="slide-right">Slide Right</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="click-particles">Click Particle Effect</label>
+                            <select id="click-particles">
+                                <option value="none">None</option>
+                                <option value="hearts" selected>Hearts</option>
+                                <option value="stars">Stars</option>
+                                <option value="celebrate">Celebrate</option>
+                                <option value="money">Money</option>
+                                <option value="fire">Fire</option>
+                                <option value="ice">Ice</option>
+                                <option value="food">Food</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="click-sound">Click Sound</label>
+                            <div class="input-group">
+                                <input type="text" id="click-sound" placeholder="sounds/click.mp3">
+                                <button class="btn btn-sm browse-btn" data-target="click-sound">Browse</button>
+                            </div>
+                            <small>💡 Sound effect when pet is clicked</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Tab -->
+            <div id="events" class="tab-pane">
+                <h2>Event Reactions</h2>
+                <div id="events-container"></div>
+            </div>
+
+            <!-- Commands Tab -->
+            <div id="commands" class="tab-pane">
+                <h2>Chat Commands</h2>
+                <p>Create custom chat commands that viewers can use to interact with your pet!</p>
+                <button id="add-command" class="btn btn-success mb-3">➕ Add Custom Command</button>
+                <div id="commands-container"></div>
+            </div>
+
+            <!-- States Tab -->
+            <div id="states" class="tab-pane">
+                <h2>Pet States</h2>
+                <button id="add-state" class="btn btn-success mb-3">➕ Add Custom State</button>
+                <div id="states-container"></div>
+            </div>
+
+            <!-- Twitch Tab -->
+            <div id="twitch" class="tab-pane">
+                <h2>Twitch Integration</h2>
+                
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="twitch-enabled">
+                        Enable Twitch Integration
+                    </label>
+                </div>
+
+                <div class="twitch-section">
+                    <h3>Channel Configuration</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="twitch-channel">Channel Name</label>
+                            <input type="text" id="twitch-channel" placeholder="your_channel_name">
+                            <small>Enter your Twitch channel name (without #)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="twitch-client-id">Client ID</label>
+                            <input type="text" id="twitch-client-id" placeholder="Your app's client ID">
+                            <small>Get from <a href="https://dev.twitch.tv/console/apps" target="_blank">Twitch Developer Console</a></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="twitch-redirect-uri">Redirect URI</label>
+                            <input type="text" id="twitch-redirect-uri" placeholder="http://localhost/config.html">
+                            <small>Must match your app settings (usually this config page URL)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twitch-section">
+                    <h3>Authentication</h3>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="use-anonymous">
+                            Use Anonymous Connection (Read-only chat, limited features)
+                        </label>
+                    </div>
+
+                    <div class="auth-status" id="main-auth-status">
+                        <strong>Main Account Status:</strong> <span id="main-auth-text">Not authenticated</span>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="authenticate-main" class="btn btn-primary">🔐 Authenticate Main Account</button>
+                        <button id="disconnect-main" class="btn btn-danger">🔓 Disconnect Main Account</button>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Main Account Authentication:</strong> This allows the pet to receive follow notifications, 
+                        channel points redemptions, and other events that require OAuth. Required scopes: chat:read, chat:edit, 
+                        channel:read:subscriptions, bits:read, channel:read:redemptions, moderator:read:followers
+                    </div>
+                </div>
+
+                <div class="twitch-section">
+                    <h3>Bot Account (Optional)</h3>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="use-bot-account">
+                            Use Separate Bot Account
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bot-username">Bot Username</label>
+                        <input type="text" id="bot-username" placeholder="your_bot_name">
+                        <small>Username of your bot account (if using one)</small>
+                    </div>
+
+                    <div class="auth-status" id="bot-auth-status">
+                        <strong>Bot Account Status:</strong> <span id="bot-auth-text">Not authenticated</span>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="authenticate-bot" class="btn btn-primary">🤖 Authenticate Bot Account</button>
+                        <button id="disconnect-bot" class="btn btn-danger">🔓 Disconnect Bot Account</button>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Bot Account:</strong> Use a separate Twitch account to send chat messages. This keeps your 
+                        main account's chat separate from automated messages. The bot needs chat:read and chat:edit permissions.
+                    </div>
+                </div>
+
+                <div class="twitch-section">
+                    <h3>Connection Info</h3>
+                    <div id="twitch-connection-status" class="connection-status">
+                        <p><strong>Chat Client:</strong> <span id="chat-status">Not connected</span></p>
+                        <p><strong>Bot Client:</strong> <span id="bot-status">Not connected</span></p>
+                        <p><strong>EventSub:</strong> <span id="eventsub-status">Not connected</span></p>
+                    </div>
+                </div>
+
+                <div class="twitch-section">
+                    <h3>💬 Emote Rain</h3>
+                    <p>Make emotes from chat fall on your pet like confetti!</p>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="emote-rain-enabled">
+                            Enable Emote Rain
+                        </label>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="emote-rain-user-level">Minimum User Level</label>
+                            <select id="emote-rain-user-level">
+                                <option value="all">All Viewers</option>
+                                <option value="follower">Followers Only</option>
+                                <option value="subscriber">Subscribers Only</option>
+                                <option value="vip">VIPs Only</option>
+                                <option value="moderator">Moderators Only</option>
+                            </select>
+                            <small>Who can trigger emote rain</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emote-rain-count">Max Emotes per Message</label>
+                            <input type="number" id="emote-rain-count" min="1" max="20" value="5">
+                            <small>Maximum emotes to spawn (1-20)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emote-rain-size">Emote Size</label>
+                            <input type="range" id="emote-rain-size" min="20" max="100" value="48">
+                            <span id="emote-rain-size-value">48px</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emote-rain-duration">Fall Duration</label>
+                            <input type="range" id="emote-rain-duration" min="1000" max="5000" step="100" value="2000">
+                            <span id="emote-rain-duration-value">2000ms</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emote-rain-cooldown">User Cooldown</label>
+                            <input type="number" id="emote-rain-cooldown" min="0" max="60" value="5">
+                            <small>Seconds between triggers per user (0-60)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emote-rain-global-cooldown">Global Cooldown</label>
+                            <input type="number" id="emote-rain-global-cooldown" min="0" max="30" value="1">
+                            <small>Seconds between any triggers (0-30)</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="emote-rain-rotate">
+                            Rotate emotes while falling
+                        </label>
+                        <label>
+                            <input type="checkbox" id="emote-rain-bounce">
+                            Bounce emotes when landing
+                        </label>
+                    </div>
+
+                    <button id="test-emote-rain" class="btn btn-secondary">🎉 Test Emote Rain</button>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>📋 Setup Instructions:</strong>
+                    <ol>
+                        <li>Create an app at <a href="https://dev.twitch.tv/console/apps" target="_blank">Twitch Developer Console</a></li>
+                        <li>Add OAuth Redirect URL: <code id="redirect-url-display"></code> <button class="btn btn-sm" onclick="copyRedirectUrl()">📋 Copy</button></li>
+                        <li>Copy the Client ID and paste it in "Client ID" field above</li>
+                        <li>Enter your Twitch channel name (without #) in "Channel Name" field</li>
+                        <li>Click "Authenticate Main Account" to get your OAuth token</li>
+                        <li>Click "Save Configuration" button at the top</li>
+                        <li>Open <code>index.html</code> in OBS Browser Source - connection will show in debug log</li>
+                    </ol>
+                    <div class="alert alert-warning" style="margin-top: 10px;">
+                        <strong>⚠️ Troubleshooting:</strong>
+                        <ul>
+                            <li>Make sure you've clicked "Save Configuration" after adding your channel and client ID</li>
+                            <li>Check that <code>index.html</code> is open in OBS Browser Source (not this config page)</li>
+                            <li>Enable Debug Mode in Advanced Settings to see connection logs</li>
+                            <li>If using Anonymous mode, uncheck "Use Anonymous Connection" and authenticate instead</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <script>
+                    // Display and copy redirect URL helper
+                    document.getElementById('redirect-url-display').textContent = window.location.origin + '/config.html';
+                    function copyRedirectUrl() {
+                        const url = window.location.origin + '/config.html';
+                        navigator.clipboard.writeText(url).then(() => {
+                            alert('Redirect URL copied to clipboard!');
+                        });
+                    }
+                </script>
+            </div>
+
+            <!-- Testing Tab -->
+            <div id="testing" class="tab-pane">
+                <h2>Testing Tools</h2>
+                
+                <div class="alert alert-info">
+                    <strong>Testing with Local Server:</strong> Open index.html in a separate tab/window to test events in real-time.
+                    <button class="btn btn-sm btn-success" onclick="window.open('index.html', 'StreamPet', 'width=800,height=600')">
+                        🚀 Open Pet in New Window
+                    </button>
+                </div>
+                
+                <div class="test-section">
+                    <h3>Simulate Events</h3>
+                    
+                    <div class="test-grid">
+                        <div class="test-card">
+                            <h4>Raid</h4>
+                            <input type="text" id="test-raider" placeholder="Username" value="TestRaider">
+                            <input type="number" id="test-raid-count" placeholder="Viewer Count" value="50">
+                            <button class="btn" onclick="configManager.testEvent('raid')">Test Raid</button>
+                        </div>
+
+                        <div class="test-card">
+                            <h4>Follow</h4>
+                            <input type="text" id="test-follower" placeholder="Username" value="NewFollower">
+                            <button class="btn" onclick="configManager.testEvent('follow')">Test Follow</button>
+                        </div>
+
+                        <div class="test-card">
+                            <h4>Subscribe</h4>
+                            <input type="text" id="test-subscriber" placeholder="Username" value="NewSub">
+                            <button class="btn" onclick="configManager.testEvent('subscribe')">Test Subscribe</button>
+                        </div>
+
+                        <div class="test-card">
+                            <h4>Gift Sub</h4>
+                            <input type="text" id="test-gifter" placeholder="Gifter Name" value="GenerousViewer">
+                            <input type="number" id="test-gift-count" placeholder="Gift Count" value="5">
+                            <button class="btn" onclick="configManager.testEvent('giftSub')">Test Gift</button>
+                        </div>
+
+                        <div class="test-card">
+                            <h4>Bits</h4>
+                            <input type="text" id="test-cheerer" placeholder="Username" value="BitsCheerer">
+                            <input type="number" id="test-bits-amount" placeholder="Amount" value="500">
+                            <button class="btn" onclick="configManager.testEvent('bits')">Test Bits</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h3>Trigger States</h3>
+                    <div class="test-grid" id="state-test-buttons"></div>
+                </div>
+
+                <div class="test-section">
+                    <h3>Test Recovery Commands</h3>
+                    <div class="test-grid" id="command-test-buttons"></div>
+                </div>
+                
+                <div class="test-section">
+                    <h3>Test Custom Commands</h3>
+                    <div class="test-grid" id="custom-command-test-buttons"></div>
+                </div>
+            </div>
+
+            <!-- Growth System Tab -->
+            <div id="growth" class="tab-pane">
+                <h2>🌱 Growth & Progression System</h2>
+                
+                <div class="stats-display">
+                    <div class="stat-card">
+                        <h3>Current Level</h3>
+                        <div class="stat-value" id="current-level">1</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Experience</h3>
+                        <div class="stat-value" id="current-xp">0 / 100</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="xp-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Evolution Stage</h3>
+                        <div class="stat-value" id="evolution-stage">Baby</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Experience Gains</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="xp-follow">Follow</label>
+                            <input type="number" id="xp-follow" min="0" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="xp-subscribe">Subscribe</label>
+                            <input type="number" id="xp-subscribe" min="0" value="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="xp-giftsub">Gift Sub</label>
+                            <input type="number" id="xp-giftsub" min="0" value="75">
+                        </div>
+                        <div class="form-group">
+                            <label for="xp-raid">Raid (base)</label>
+                            <input type="number" id="xp-raid" min="0" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="xp-bits">Bits (per bit)</label>
+                            <input type="number" id="xp-bits" min="0" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="xp-channelpoints">Channel Points</label>
+                            <input type="number" id="xp-channelpoints" min="0" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="xp-command">Command</label>
+                            <input type="number" id="xp-command" min="0" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label for="xp-click">Click</label>
+                            <input type="number" id="xp-click" min="0" value="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Evolution Stages</h3>
+                    <div id="evolution-stages-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <button id="add-evolution-stage" class="btn btn-secondary">+ Add Stage</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>Level Up Bar Customization</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="levelup-style">Visual Style</label>
+                            <select id="levelup-style">
+                                <option value="default">Default (Purple Gradient)</option>
+                                <option value="neon-cyberpunk">Neon Cyberpunk</option>
+                                <option value="vaporwave">Vaporwave</option>
+                                <option value="cute">Cute</option>
+                                <option value="manga">Manga</option>
+                                <option value="fiery">Fiery</option>
+                                <option value="ice">Ice</option>
+                                <option value="wind">Wind</option>
+                                <option value="earth">Earth</option>
+                                <option value="water">Water</option>
+                                <option value="lightning">Lightning</option>
+                                <option value="gothic">Gothic Shadow</option>
+                                <option value="terrafae">Terrafae</option>
+                                <option value="pommie">Pommie (Cat)</option>
+                                <option value="pokemon">Pokemon</option>
+                            </select>
+                            <small>💡 Choose a visual style for level up notifications</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="levelup-position">Position</label>
+                            <select id="levelup-position">
+                                <option value="top">Top</option>
+                                <option value="middle">Middle</option>
+                                <option value="bottom">Bottom</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="levelup-offset-y">Vertical Offset</label>
+                            <input type="number" id="levelup-offset-y" min="-500" max="500" value="0">
+                            <small>Pixels from position (-500 to 500)</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="levelup-duration">Display Duration</label>
+                            <input type="number" id="levelup-duration" min="1000" max="10000" step="500" value="3000">
+                            <small>Milliseconds (1000-10000)</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="levelup-size">Text Size</label>
+                            <input type="range" id="levelup-size" min="16" max="48" value="24">
+                            <span id="levelup-size-value">24px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>✨ Level Up Effect</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="levelup-effect-type">Effect Type</label>
+                            <select id="levelup-effect-type">
+                                <option value="glow">Glow</option>
+                                <option value="sparkle">Sparkle</option>
+                                <option value="aura">Aura</option>
+                                <option value="rainbow" selected>Rainbow</option>
+                                <option value="pulse">Pulse</option>
+                            </select>
+                            <small>💡 Visual effect shown on the pet when leveling up</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="levelup-effect-color">Effect Color</label>
+                            <input type="color" id="levelup-effect-color" value="#FFD700">
+                            <small>Primary color for the effect</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="levelup-effect-duration">Effect Duration</label>
+                            <input type="number" id="levelup-effect-duration" min="500" max="5000" step="100" value="2000">
+                            <small>Milliseconds (500-5000)</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="levelup-effect-intensity">Effect Intensity</label>
+                            <input type="range" id="levelup-effect-intensity" min="0.5" max="2" step="0.1" value="1.2">
+                            <span id="levelup-effect-intensity-value">1.2x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>🌟 Evolution Effect</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="evolution-effect-type">Effect Type</label>
+                            <select id="evolution-effect-type">
+                                <option value="burst" selected>Burst</option>
+                            </select>
+                            <small>💡 Epic animation when pet evolves to a new stage</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="evolution-effect-color">Primary Color</label>
+                            <input type="color" id="evolution-effect-color" value="#FF6EC7">
+                            <small>Main color for the evolution effect</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="evolution-effect-color2">Secondary Color</label>
+                            <input type="color" id="evolution-effect-color2" value="#7C3AED">
+                            <small>Secondary color for the effect</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="evolution-effect-duration">Effect Duration</label>
+                            <input type="number" id="evolution-effect-duration" min="1000" max="10000" step="500" value="3000">
+                            <small>Milliseconds (1000-10000)</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="evolution-effect-intensity">Effect Intensity</label>
+                            <input type="range" id="evolution-effect-intensity" min="0.5" max="3" step="0.1" value="1.5">
+                            <span id="evolution-effect-intensity-value">1.5x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Actions</h3>
+                    <button id="reset-growth" class="btn btn-warning">🔄 Reset Growth Progress</button>
+                    <button id="level-up-test" class="btn btn-secondary">⬆️ Test Level Up</button>
+                    <button id="evolution-test" class="btn btn-secondary">🌟 Test Evolution Effect</button>
+                </div>
+            </div>
+
+            <!-- Viewer Interaction Tab -->
+            <div id="viewer-interaction" class="tab-pane">
+                <h2>👥 Viewer Interaction</h2>
+                
+                <div class="form-section">
+                    <h3>General Settings</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="viewer-enabled">
+                            Enable Viewer Interaction
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Channel Points Redemptions</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="channelpoints-enabled">
+                            Enable Channel Point Redemptions
+                        </label>
+                    </div>
+                    
+                    <div id="redemptions-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <button id="add-redemption" class="btn btn-secondary">+ Add Custom Redemption</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>Chat Commands</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="viewer-commands-enabled">
+                            Enable Viewer Commands
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="allow-viewer-commands">
+                            Allow All Viewers (not just mods)
+                        </label>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="user-cooldown">User Cooldown (ms)</label>
+                            <input type="number" id="user-cooldown" min="0" step="1000" value="30000">
+                            <small>Time between commands per user</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="global-cooldown">Global Cooldown (ms)</label>
+                            <input type="number" id="global-cooldown" min="0" step="1000" value="5000">
+                            <small>Time between any commands</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Polls</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="polls-enabled">
+                            Enable Polls
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="poll-duration">Default Poll Duration (ms)</label>
+                        <input type="number" id="poll-duration" min="10000" step="1000" value="60000">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Redemption Stats</h3>
+                    <div id="redemption-stats">
+                        <p>No redemptions yet. Stats will appear here once viewers start redeeming!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Greetings Tab -->
+            <div id="greetings" class="tab-pane">
+                <h2>👋 First-Time Chatter Greetings</h2>
+                
+                <div class="form-section">
+                    <h3>General Settings</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="greetings-enabled">
+                            Enable First-Time Chatter Greetings
+                        </label>
+                        <small>Greet viewers when they send their first message of the stream</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="greeting-image">Greeting Image</label>
+                        <input type="text" id="greeting-image" placeholder="Images/wave.png">
+                        <small>Pet image to show when greeting (like events)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="greeting-sound">Greeting Sound</label>
+                        <input type="text" id="greeting-sound" placeholder="sounds/greeting.mp3">
+                        <small>Optional sound to play with greeting</small>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="greeting-particles">
+                            Show Particles on Greeting
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="greeting-duration">Greeting Display Duration (ms)</label>
+                        <input type="number" id="greeting-duration" min="1000" step="500" value="5000">
+                        <small>How long to show the greeting message</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Random Greeting Messages</h3>
+                    <p>The pet will randomly pick one of these messages when greeting a first-time chatter. Use <code>{user}</code> to include the viewer's name.</p>
+                    
+                    <div id="greeting-messages-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new-greeting-message">Add New Greeting Message</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="new-greeting-message" placeholder="Welcome {user}! Thanks for chatting! 💜" style="flex: 1;">
+                            <button id="add-greeting-message" class="btn btn-secondary">+ Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Custom User Greetings</h3>
+                    <p>Set specific greeting messages for individual users (overrides random messages).</p>
+                    
+                    <div id="custom-greetings-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Add Custom User Greeting</label>
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <input type="text" id="custom-greeting-username" placeholder="Username" style="flex: 1;">
+                            <input type="text" id="custom-greeting-message" placeholder="Special message for this user" style="flex: 2;">
+                            <button id="add-custom-greeting" class="btn btn-secondary">+ Add</button>
+                        </div>
+                        <small>Enter the Twitch username (case-insensitive) and their custom greeting message</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Greeting Statistics</h3>
+                    <div id="greeting-stats">
+                        <p>Greetings sent this session: <strong id="greetings-sent-count">0</strong></p>
+                        <p>Unique chatters greeted: <strong id="unique-chatters-count">0</strong></p>
+                    </div>
+                    <button id="reset-greeting-session" class="btn btn-danger">Reset Session Data</button>
+                    <small style="display: block; margin-top: 8px;">Resets the list of who has been greeted this stream</small>
+                </div>
+            </div>
+
+            <!-- Seasonal Tab -->
+            <div id="seasonal" class="tab-pane">
+                <h2>🎃 Seasonal & Holiday Modes</h2>
+                
+                <div class="form-section">
+                    <h3>General Settings</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="seasonal-enabled">
+                            Enable Seasonal Themes
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="seasonal-autodetect">
+                            Auto-Detect Current Season
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="current-season">Current Season</label>
+                        <select id="current-season">
+                            <option value="none">None</option>
+                            <option value="halloween">🎃 Halloween</option>
+                            <option value="christmas">🎄 Christmas</option>
+                            <option value="newYear">🎆 New Year</option>
+                            <option value="valentine">💝 Valentine's Day</option>
+                            <option value="easter">🐰 Easter</option>
+                            <option value="summer">☀️ Summer</option>
+                        </select>
+                        <small>Manual override when auto-detect is off</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Halloween Theme (Oct 15 - Nov 1)</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="halloween-image">Halloween Image</label>
+                            <input type="text" id="halloween-image" placeholder="Images/halloween.png">
+                            <button class="btn btn-sm" onclick="selectImage('halloween-image')">Browse</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="halloween-particles">Particle Effect</label>
+                            <select id="halloween-particles">
+                                <option value="none">None</option>
+                                <option value="stars">Stars</option>
+                                <option value="hearts">Hearts</option>
+                                <option value="celebrate">Celebrate</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Christmas Theme (Dec 1 - Dec 26)</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="christmas-image">Christmas Image</label>
+                            <input type="text" id="christmas-image" placeholder="Images/christmas.png">
+                            <button class="btn btn-sm" onclick="selectImage('christmas-image')">Browse</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="christmas-particles">Particle Effect</label>
+                            <select id="christmas-particles">
+                                <option value="none">None</option>
+                                <option value="stars">Stars</option>
+                                <option value="ice">Ice</option>
+                                <option value="celebrate">Celebrate</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>New Year Theme (Dec 27 - Jan 2)</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="newyear-image">New Year Image</label>
+                            <input type="text" id="newyear-image" placeholder="Images/newyear.png">
+                            <button class="btn btn-sm" onclick="selectImage('newyear-image')">Browse</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="newyear-particles">Particle Effect</label>
+                            <select id="newyear-particles">
+                                <option value="none">None</option>
+                                <option value="celebrate">Celebrate</option>
+                                <option value="stars">Stars</option>
+                                <option value="fire">Fire</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Valentine's Day Theme (Feb 10 - Feb 15)</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="valentine-image">Valentine's Image</label>
+                            <input type="text" id="valentine-image" placeholder="Images/valentine.png">
+                            <button class="btn btn-sm" onclick="selectImage('valentine-image')">Browse</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="valentine-particles">Particle Effect</label>
+                            <select id="valentine-particles">
+                                <option value="none">None</option>
+                                <option value="hearts">Hearts</option>
+                                <option value="stars">Stars</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Easter Theme (Apr 13 - Apr 21)</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="easter-image">Easter Image</label>
+                            <input type="text" id="easter-image" placeholder="Images/easter.png">
+                            <button class="btn btn-sm" onclick="selectImage('easter-image')">Browse</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="easter-particles">Particle Effect</label>
+                            <select id="easter-particles">
+                                <option value="none">None</option>
+                                <option value="hearts">Hearts</option>
+                                <option value="stars">Stars</option>
+                                <option value="celebrate">Celebrate</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Summer Theme (Jun 20 - Sep 22)</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="summer-image">Summer Image</label>
+                            <input type="text" id="summer-image" placeholder="Images/summer.png">
+                            <button class="btn btn-sm" onclick="selectImage('summer-image')">Browse</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="summer-particles">Particle Effect</label>
+                            <select id="summer-particles">
+                                <option value="none">None</option>
+                                <option value="stars">Stars</option>
+                                <option value="fire">Fire</option>
+                                <option value="celebrate">Celebrate</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics" class="tab-pane">
+                <h2>📊 Analytics Dashboard</h2>
+                
+                <div class="stats-display">
+                    <div class="stat-card">
+                        <h3>Total Events</h3>
+                        <div class="stat-value" id="total-events">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Commands Used</h3>
+                        <div class="stat-value" id="total-commands">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>States Entered</h3>
+                        <div class="stat-value" id="total-states">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Clicks</h3>
+                        <div class="stat-value" id="total-clicks">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Session Count</h3>
+                        <div class="stat-value" id="session-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Uptime</h3>
+                        <div class="stat-value" id="total-uptime">0 min</div>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-section">
+                        <h3>Top Events</h3>
+                        <ol id="top-events-list">
+                            <li>No data yet</li>
+                        </ol>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h3>Top Commands</h3>
+                        <ol id="top-commands-list">
+                            <li>No data yet</li>
+                        </ol>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h3>Top States</h3>
+                        <ol id="top-states-list">
+                            <li>No data yet</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Actions</h3>
+                    <button id="refresh-analytics" class="btn btn-primary">🔄 Refresh Analytics</button>
+                    <button id="export-analytics" class="btn btn-secondary">📥 Export Data</button>
+                    <button id="reset-analytics" class="btn btn-warning">🗑️ Reset Analytics</button>
+                </div>
+            </div>
+
+            <!-- Advanced Animations Tab -->
+            <div id="animations" class="tab-pane">
+                <h2>✨ Advanced Animations</h2>
+                
+                <div class="form-section">
+                    <h3>Weather Effects</h3>
+                    <div class="form-group">
+                        <label for="weather-type">Active Weather</label>
+                        <select id="weather-type">
+                            <option value="none">None</option>
+                            <option value="rain">💧 Rain</option>
+                            <option value="snow">❄️ Snow</option>
+                            <option value="leaves">🍂 Falling Leaves</option>
+                            <option value="sakura">🌸 Cherry Blossoms</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weather-intensity">Intensity</label>
+                            <input type="range" id="weather-intensity" min="1" max="10" value="5">
+                            <span id="weather-intensity-value">5</span>
+                        </div>
+                    </div>
+                    
+                    <button id="start-weather" class="btn btn-primary">🌧️ Start Weather</button>
+                    <button id="stop-weather" class="btn btn-secondary">⏹️ Stop Weather</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>Physics Engine</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="physics-enabled">
+                            Enable Physics-Based Movement
+                        </label>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="gravity">Gravity</label>
+                            <input type="range" id="gravity" min="0" max="2" step="0.1" value="0.5">
+                            <span id="gravity-value">0.5</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="bounce">Bounce Factor</label>
+                            <input type="range" id="bounce" min="0" max="1" step="0.1" value="0.7">
+                            <span id="bounce-value">0.7</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="friction">Friction</label>
+                            <input type="range" id="friction" min="0.9" max="1" step="0.01" value="0.99">
+                            <span id="friction-value">0.99</span>
+                        </div>
+                    </div>
+                    
+                    <button id="toggle-physics" class="btn btn-primary">🎮 Toggle Physics</button>
+                    <button id="apply-force" class="btn btn-secondary">💥 Apply Random Force</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>Sprite Sheets</h3>
+                    <div class="form-group">
+                        <label for="spritesheet-path">Sprite Sheet Image</label>
+                        <input type="text" id="spritesheet-path" placeholder="Images/spritesheet.png">
+                        <button class="btn btn-sm" onclick="selectImage('spritesheet-path')">Browse</button>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="sprite-framewidth">Frame Width (px)</label>
+                            <input type="number" id="sprite-framewidth" min="16" value="64">
+                        </div>
+                        <div class="form-group">
+                            <label for="sprite-frameheight">Frame Height (px)</label>
+                            <input type="number" id="sprite-frameheight" min="16" value="64">
+                        </div>
+                        <div class="form-group">
+                            <label for="sprite-frames">Total Frames</label>
+                            <input type="number" id="sprite-frames" min="1" value="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="sprite-fps">FPS</label>
+                            <input type="number" id="sprite-fps" min="1" max="60" value="12">
+                        </div>
+                    </div>
+                    
+                    <button id="load-spritesheet" class="btn btn-primary">📸 Load Sprite Sheet</button>
+                    <button id="play-sprite-animation" class="btn btn-secondary">▶️ Play Animation</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>Path Movement</h3>
+                    <button id="create-path" class="btn btn-primary">📍 Create Custom Path</button>
+                    <button id="follow-circle" class="btn btn-secondary">⭕ Follow Circle</button>
+                    <button id="follow-wave" class="btn btn-secondary">〰️ Follow Wave</button>
+                    <button id="stop-path" class="btn btn-danger">⏹️ Stop Path Movement</button>
+                    <button id="reset-position" class="btn btn-secondary">🎯 Reset to Default Position</button>
+                </div>
+            </div>
+
+            <!-- Integrations Tab -->
+            <div id="integrations" class="tab-pane">
+                <h2>🔗 Integration Extensions</h2>
+                
+                <div class="form-section">
+                    <h3>Discord Webhooks</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="discord-enabled">
+                            Enable Discord Notifications
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discord-webhook">Webhook URL</label>
+                        <input type="text" id="discord-webhook" placeholder="https://discord.com/api/webhooks/...">
+                        <small>⚠️ Keep this private! Anyone with this URL can send messages to your Discord channel.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Notify On Events:</label>
+                        <div class="checkbox-list">
+                            <label><input type="checkbox" class="discord-event" value="follow"> Follow</label>
+                            <label><input type="checkbox" class="discord-event" value="subscribe"> Subscribe</label>
+                            <label><input type="checkbox" class="discord-event" value="giftSub"> Gift Sub</label>
+                            <label><input type="checkbox" class="discord-event" value="raid"> Raid</label>
+                            <label><input type="checkbox" class="discord-event" value="bits"> Bits</label>
+                            <label><input type="checkbox" class="discord-event" value="channelPoints"> Channel Points</label>
+                        </div>
+                    </div>
+                    
+                    <button id="test-discord" class="btn btn-secondary">🧪 Test Discord Webhook</button>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h4>📋 How to Get Your Discord Webhook URL:</h4>
+                        <ol style="margin: 10px 0; padding-left: 20px;">
+                            <li>Open Discord and go to your server</li>
+                            <li>Right-click the channel where you want notifications</li>
+                            <li>Click <strong>"Edit Channel"</strong></li>
+                            <li>Go to <strong>"Integrations"</strong> tab</li>
+                            <li>Click <strong>"Webhooks"</strong></li>
+                            <li>Click <strong>"New Webhook"</strong> (or use an existing one)</li>
+                            <li>Give it a name (e.g., "Stream Pet") and choose an avatar</li>
+                            <li>Click <strong>"Copy Webhook URL"</strong></li>
+                            <li>Paste it in the "Webhook URL" field above ⬆️</li>
+                            <li>Select which events you want to be notified about</li>
+                            <li>Click "Test Discord Webhook" to verify it works!</li>
+                        </ol>
+                        <div style="background: #17a2b8; color: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                            <strong>💡 What you'll get:</strong> Stream Pet will send rich embeds to your Discord channel when events happen on stream (follows, subs, raids, bits, etc.)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>StreamElements</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="streamelements-enabled">
+                            Enable StreamElements Integration
+                        </label>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="streamelements-account">Account ID</label>
+                            <input type="text" id="streamelements-account" placeholder="Your StreamElements Account ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="streamelements-token">JWT Token</label>
+                            <input type="password" id="streamelements-token" placeholder="Your JWT Token">
+                        </div>
+                    </div>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h4>📋 How to Get Your StreamElements Credentials:</h4>
+                        <ol style="margin: 10px 0; padding-left: 20px;">
+                            <li>Go to <a href="https://streamelements.com" target="_blank">StreamElements.com</a> and log in</li>
+                            <li>Click your profile icon (top right) → <strong>"Account settings"</strong></li>
+                            <li>Click <strong>"Channels"</strong> in the left sidebar</li>
+                            <li>Your <strong>Account ID</strong> is shown at the top (24-character alphanumeric code)</li>
+                            <li>For the JWT Token:</li>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>Go to <a href="https://streamelements.com/dashboard/account/channels" target="_blank">Account Settings → Channels</a></li>
+                                <li>Click <strong>"Show secrets"</strong></li>
+                                <li>Copy the <strong>"JWT Token"</strong></li>
+                            </ul>
+                            <li>Paste both values in the fields above ⬆️</li>
+                        </ol>
+                        <div style="background: #17a2b8; color: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                            <strong>💡 What you'll get:</strong> Sync alerts and events from StreamElements to trigger pet reactions, access tip/donation info, and integrate with StreamElements overlays.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Streamlabs</h3>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="streamlabs-enabled">
+                            Enable Streamlabs Integration
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="streamlabs-token">Socket Token</label>
+                        <input type="password" id="streamlabs-token" placeholder="Your Streamlabs Socket Token">
+                    </div>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h4>📋 How to Get Your Streamlabs Socket Token:</h4>
+                        <ol style="margin: 10px 0; padding-left: 20px;">
+                            <li>Go to <a href="https://streamlabs.com" target="_blank">Streamlabs.com</a> and log in</li>
+                            <li>Click <strong>"Settings"</strong> (gear icon in bottom left)</li>
+                            <li>Go to <strong>"API Settings"</strong> in the left sidebar</li>
+                            <li>Scroll down to <strong>"API Tokens"</strong></li>
+                            <li>Copy your <strong>"Socket API Token"</strong></li>
+                            <li>Paste it in the "Socket Token" field above ⬆️</li>
+                        </ol>
+                        <div style="background: #17a2b8; color: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                            <strong>💡 What you'll get:</strong> Receive real-time alerts from Streamlabs for donations, follows, subs, and more. The pet will react to these events automatically!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Spotify</h3>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="spotify-enabled">
+                            Enable Spotify Integration
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="spotify-react-genres">
+                            React to Music Genres
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="spotify-clientid">Client ID</label>
+                        <input type="text" id="spotify-clientid" placeholder="Your Spotify Client ID">
+                        <small>Get from <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Dashboard</a></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="spotify-redirect-uri-input">Redirect URI</label>
+                        <input type="text" id="spotify-redirect-uri-input" placeholder="https://YOUR-USERNAME.github.io/stream-pet/spotify-callback.html">
+                        <small>Must EXACTLY match what you entered in Spotify Dashboard settings</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button id="spotify-connect-btn" class="btn btn-primary">Connect Spotify</button>
+                        <button id="spotify-disconnect-btn" class="btn btn-secondary" style="display: none;">Disconnect Spotify</button>
+                        <div id="spotify-status" style="margin-top: 10px; font-weight: bold;"></div>
+                    </div>
+                    
+                    <div class="form-group" id="spotify-manual-token" style="display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6;">
+                        <label for="spotify-token-input"><strong>📋 Paste Your Access Token:</strong></label>
+                        <small style="display: block; margin-bottom: 10px; color: #666;">After authorizing on Spotify, your custom callback page will display the access token. Copy the token (just the token part, not the whole URL) and paste it below:</small>
+                        <textarea id="spotify-token-input" placeholder="Paste your access token here (e.g., BQC...)" style="width: 100%; min-height: 80px; margin-bottom: 10px; font-family: monospace; font-size: 12px;"></textarea>
+                        <button id="save-spotify-token" class="btn btn-success">Complete Login</button>
+                        <button id="cancel-spotify-token" class="btn btn-secondary">Cancel</button>
+                    </div>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <h4>📋 Quick Setup Guide:</h4>
+                        <ol style="margin: 10px 0; padding-left: 20px;">
+                            <li><strong>Upload Callback Page:</strong> Upload <code>spotify-callback.html</code> to a web host (GitHub Pages recommended - see instructions below)</li>
+                            <li>Go to <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Developer Dashboard</a></li>
+                            <li>Click your app (or "Create App" if you haven't yet)</li>
+                            <li>Click <strong>"Settings"</strong> (top right)</li>
+                            <li>Scroll to <strong>"Redirect URIs"</strong></li>
+                            <li>Click <strong>"Edit"</strong></li>
+                            <li>Enter your callback URL (e.g., <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">https://YOUR-USERNAME.github.io/stream-pet/spotify-callback.html</code>)</li>
+                            <li>Click <strong>"Add"</strong>, then click <strong>"Save"</strong> at the bottom</li>
+                            <li>Copy the "Client ID" and paste it in the field above ⬆️</li>
+                            <li>Make sure the "Redirect URI" field above matches exactly what you entered in Spotify Dashboard</li>
+                            <li>Click "Connect Spotify" below ⬇️</li>
+                            <li>After authorizing, the callback page will display your token - copy it</li>
+                            <li>Paste it in the box that appears and click "Complete Login"</li>
+                        </ol>
+                        <div style="background: #dc3545; color: white; padding: 10px; margin-top: 10px; border-radius: 4px;">
+                            <strong>⚠️ IMPORTANT:</strong> You MUST add your callback URL to your Spotify app's Redirect URIs list in Settings → Edit Settings → Redirect URIs → Add. The "INVALID_CLIENT" error means it's not added yet!
+                        </div>
+                        
+                        <div id="github-setup-instructions" style="background: #f8f9fa; padding: 15px; margin-top: 10px; border-radius: 4px; border: 1px solid #dee2e6; color: #333;">
+                            <h4 style="margin-top: 0; color: #333;">🎨 GitHub Pages Setup (Recommended)</h4>
+                            <p>Host your custom <code>spotify-callback.html</code> for free on GitHub Pages:</p>
+                            <ol style="padding-left: 20px; margin: 10px 0;">
+                                <li>Go to <a href="https://github.com" target="_blank">GitHub.com</a> and sign in (or create a free account)</li>
+                                <li>Click <strong>"+"</strong> (top right) → <strong>"New repository"</strong></li>
+                                <li>Repository name: <code>stream-pet</code></li>
+                                <li>Make it <strong>Public</strong> ✅</li>
+                                <li>Click <strong>"Create repository"</strong></li>
+                                <li>Click <strong>"uploading an existing file"</strong></li>
+                                <li>Drag and drop <code>spotify-callback.html</code> from your Stream Pet folder</li>
+                                <li>Click <strong>"Commit changes"</strong></li>
+                                <li>Go to <strong>Settings</strong> → <strong>Pages</strong></li>
+                                <li>Under "Source", select <strong>main</strong> branch → <strong>Save</strong></li>
+                                <li>Wait 1-2 minutes for deployment</li>
+                                <li>Your callback URL will be: <code style="background: #fff; padding: 2px 6px; border-radius: 3px; user-select: all; color: #0c5460;">https://YOUR-USERNAME.github.io/stream-pet/spotify-callback.html</code></li>
+                                <li>Copy this URL and use it as your Redirect URI in both Spotify Dashboard and the field above!</li>
+                            </ol>
+                            <p style="margin-top: 10px; padding: 10px; background: #d4edda; border-radius: 4px; color: #155724;">
+                                ✨ <strong>Bonus:</strong> The custom callback page features a cool cyberpunk theme from me, Hana Cee!
+                            </p>
+                        </div>
+                        <a href="#" id="show-github-setup" style="color: #0c5460; text-decoration: underline; cursor: pointer; font-size: 14px;">🎨 Click for GitHub Pages setup instructions (recommended!)</a>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>Genre Reactions</h4>
+                        <div id="genre-animations-list">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Custom Webhooks</h3>
+                    <div id="custom-webhooks-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <button id="add-custom-webhook" class="btn btn-secondary">+ Add Custom Webhook</button>
+                </div>
+            </div>
+
+            <!-- Testing Tab -->
+            <div id="testing" class="tab-pane">
+                <h2>🧪 Testing</h2>
+                
+                <div class="test-section">
+                    <h3>Test Twitch Events</h3>
+                    <div class="test-grid" id="event-test-buttons"></div>
+                </div>
+
+                <div class="test-section">
+                    <h3>Test Recovery Commands</h3>
+                    <div class="test-grid" id="command-test-buttons"></div>
+                </div>
+                
+                <div class="test-section">
+                    <h3>Test Custom Commands</h3>
+                    <div class="test-grid" id="custom-command-test-buttons"></div>
+                </div>
+            </div>
+
+            <!-- Import/Export Tab -->
+            <div id="import-export" class="tab-pane">
+                <h2>Import / Export Configuration</h2>
+                
+                <div class="export-section">
+                    <h3>Export Configuration</h3>
+                    <p>Download your current configuration as a JSON file:</p>
+                    <button id="export-config" class="btn btn-primary">📥 Export to File</button>
+                </div>
+
+                <div class="import-section">
+                    <h3>Import Configuration</h3>
+                    <p>Load a configuration from a JSON file:</p>
+                    <input type="file" id="import-file" accept=".json">
+                    <button id="import-config" class="btn btn-primary">📤 Import from File</button>
+                </div>
+
+                <div class="json-section">
+                    <h3>Configuration JSON</h3>
+                    <p>View or edit raw configuration:</p>
+                    <textarea id="config-json" rows="20"></textarea>
+                    <button id="apply-json" class="btn btn-warning">Apply JSON</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview-panel" id="preview-panel">
+            <div class="preview-header">
+                <h3>Live Preview</h3>
+                <button id="toggle-preview" class="btn btn-sm" title="Minimize/Maximize Preview">−</button>
+            </div>
+            <div class="preview-content">
+                <div class="preview-container">
+                    <iframe id="preview-frame" src="index.html"></iframe>
+                </div>
+                <button id="refresh-preview" class="btn">🔄 Refresh Preview</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Picker Modal -->
+    <div id="image-picker-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="image-picker-title">Select Images</h2>
+                <button class="modal-close" onclick="closeImagePicker()">&times;</button>
+            </div>
+            
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="default">Default</button>
+                <button class="tab-btn" data-tab="growth">Growth Stages</button>
+                <button class="tab-btn" data-tab="seasonal">Holiday Modes</button>
+                <button class="tab-btn" data-tab="spritesheet">Sprite Sheet</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Default Tab -->
+                <div class="modal-tab-content active" data-tab="default">
+                    <div class="form-group">
+                        <label>Default Image</label>
+                        <input type="text" id="picker-default-image" placeholder="Images/default.png">
+                        <button class="btn btn-sm" onclick="selectImage('picker-default-image')">Browse</button>
+                    </div>
+                </div>
+                
+                <!-- Growth Stages Tab -->
+                <div class="modal-tab-content" data-tab="growth">
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="picker-use-default-growth">
+                            Use Default Image for All Growth Stages
+                        </label>
+                    </div>
+                    
+                    <div id="picker-growth-stages" class="stage-list">
+                        <!-- Dynamically populated with growth stages -->
+                    </div>
+                </div>
+                
+                <!-- Seasonal Tab -->
+                <div class="modal-tab-content" data-tab="seasonal">
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="picker-use-default-seasonal">
+                            Use Default Image for All Holiday Modes
+                        </label>
+                    </div>
+                    
+                    <div id="picker-seasonal-themes" class="theme-list">
+                        <!-- Dynamically populated with seasonal themes -->
+                    </div>
+                </div>
+                
+                <!-- Sprite Sheet Tab -->
+                <div class="modal-tab-content" data-tab="spritesheet">
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="picker-use-spritesheet">
+                            Use Sprite Sheet Animation
+                        </label>
+                        <small>Enable sprite sheet animation instead of static images</small>
+                    </div>
+                    
+                    <div id="spritesheet-settings">
+                        <h4 style="margin-top: 1rem;">Default Sprite Sheet</h4>
+                        <div class="form-group">
+                            <label>Sprite Sheet Image</label>
+                            <input type="text" id="picker-sprite-default" placeholder="Images/spritesheet.png">
+                            <button class="btn btn-sm" onclick="selectImage('picker-sprite-default')">Browse</button>
+                        </div>
+                        
+                        <div class="form-grid" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="form-group">
+                                <label>Frame Width (px)</label>
+                                <input type="number" id="picker-sprite-framewidth" min="16" value="64">
+                            </div>
+                            <div class="form-group">
+                                <label>Frame Height (px)</label>
+                                <input type="number" id="picker-sprite-frameheight" min="16" value="64">
+                            </div>
+                            <div class="form-group">
+                                <label>Total Frames</label>
+                                <input type="number" id="picker-sprite-frames" min="1" value="8">
+                            </div>
+                            <div class="form-group">
+                                <label>FPS (Frames/Second)</label>
+                                <input type="number" id="picker-sprite-fps" min="1" max="60" value="12">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group checkbox-group" style="margin-top: 1rem;">
+                            <label>
+                                <input type="checkbox" id="picker-sprite-loop" checked>
+                                Loop Animation
+                            </label>
+                        </div>
+                        
+                        <h4 style="margin-top: 1.5rem;">Growth Stage Sprite Sheets</h4>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="picker-sprite-use-default-growth">
+                                Use Default Sprite Sheet for All Growth Stages
+                            </label>
+                        </div>
+                        
+                        <div id="picker-sprite-growth-stages">
+                            <!-- Dynamically populated -->
+                        </div>
+                        
+                        <h4 style="margin-top: 1.5rem;">Holiday Mode Sprite Sheets</h4>
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="picker-sprite-use-default-seasonal">
+                                Use Default Sprite Sheet for All Holiday Modes
+                            </label>
+                        </div>
+                        
+                        <div id="picker-sprite-seasonal-themes">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeImagePicker()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveImagePicker()">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/config.js"></script>
+</body>
+</html>
+

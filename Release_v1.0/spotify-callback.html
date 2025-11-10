@@ -521,11 +521,6 @@
         window.addEventListener('load', async () => {
             const { code, state, error } = getCodeFromQuery();
             
-            console.log('Callback loaded');
-            console.log('Code:', code);
-            console.log('State:', state);
-            console.log('Error:', error);
-            
             if (error) {
                 // Show error
                 document.getElementById('error-content').style.display = 'block';
@@ -546,90 +541,62 @@
                 }
                 
                 document.getElementById('error-message').textContent = errorMsg;
-            } else if (code && state) {
-                // We have an authorization code - decode state to get client info
+            } else if (code) {
+                // We have an authorization code - exchange it for a token
                 try {
-                    console.log('Decoding state parameter...');
-                    const stateData = JSON.parse(atob(state));
-                    console.log('State data:', stateData);
+                    // Get the code verifier from localStorage (set by the parent window)
+                    const codeVerifier = localStorage.getItem('spotify_code_verifier');
+                    const clientId = localStorage.getItem('spotify_client_id');
+                    const redirectUri = localStorage.getItem('spotify_redirect_uri');
                     
-                    const { clientId, redirectUri } = stateData;
-                    
-                    if (!clientId || !redirectUri) {
-                        throw new Error('Missing client data in state parameter.');
+                    if (!codeVerifier || !clientId || !redirectUri) {
+                        throw new Error('Missing PKCE parameters. Please try connecting again.');
                     }
                     
-                    // Request code verifier from parent window
-                    console.log('Requesting code verifier from parent...');
-                    if (!window.opener) {
-                        throw new Error('Parent window not accessible. Please open this from the config page.');
-                    }
+                    // Exchange code for token
+                    const tokenData = await exchangeCodeForToken(code, codeVerifier, clientId, redirectUri);
                     
-                    // Ask parent for the code verifier
-                    window.opener.postMessage({
-                        type: 'request_code_verifier',
-                        state: stateData.state
-                    }, '*');
+                    // Clean up localStorage
+                    localStorage.removeItem('spotify_code_verifier');
+                    localStorage.removeItem('spotify_client_id');
+                    localStorage.removeItem('spotify_redirect_uri');
                     
-                    // Wait for parent to respond with code verifier
-                    window.addEventListener('message', async (event) => {
-                        console.log('Received message from parent:', event.data);
-                        
-                        if (event.data.type === 'code_verifier_response') {
-                            try {
-                                const codeVerifier = event.data.codeVerifier;
-                                
-                                if (!codeVerifier) {
-                                    throw new Error('Parent did not provide code verifier.');
-                                }
-                                
-                                console.log('Got code verifier, exchanging for token...');
-                                
-                                // Exchange code for token
-                                const tokenData = await exchangeCodeForToken(code, clientId, redirectUri, codeVerifier);
-                                
-                                // Show success
-                                document.getElementById('success-content').style.display = 'block';
-                                
-                                // Create full token data object
-                                const fullTokenData = {
-                                    access_token: tokenData.access_token,
-                                    refresh_token: tokenData.refresh_token,
-                                    expires_in: tokenData.expires_in,
-                                    state: stateData.state,
-                                    token_expiry: Date.now() + (parseInt(tokenData.expires_in) * 1000)
-                                };
-                                
-                                // Display formatted token
-                                document.getElementById('token-display').textContent = JSON.stringify(fullTokenData, null, 2);
-                                
-                                console.log('Sending token to parent window...');
-                                
-                                // Send to parent window
-                                window.opener.postMessage({
-                                    type: 'spotify_token',
-                                    data: fullTokenData
-                                }, '*');
-                                
-                                console.log('Token sent to parent, waiting 2 seconds before closing...');
-                                
-                                // Close window after 2 seconds
-                                setTimeout(() => {
-                                    window.close();
-                                }, 2000);
-                            } catch (error) {
-                                // Show error
-                                document.getElementById('error-content').style.display = 'block';
-                                document.getElementById('error-message').textContent = `Token exchange failed: ${error.message}`;
-                                console.error('Token exchange error:', error);
-                            }
+                    // Show success
+                    document.getElementById('success-content').style.display = 'block';
+                    
+                    // Create full token data object
+                    const fullTokenData = {
+                        access_token: tokenData.access_token,
+                        refresh_token: tokenData.refresh_token,
+                        expires_in: tokenData.expires_in,
+                        state: state,
+                        token_expiry: Date.now() + (parseInt(tokenData.expires_in) * 1000)
+                    };
+                    
+                    // Display formatted token
+                    document.getElementById('token-display').textContent = JSON.stringify(fullTokenData, null, 2);
+                    
+                    // Save to localStorage for the config page to pick up
+                    localStorage.setItem('spotify_access_token', tokenData.access_token);
+                    localStorage.setItem('spotify_refresh_token', tokenData.refresh_token);
+                    localStorage.setItem('spotify_token_expiry', fullTokenData.token_expiry.toString());
+                    
+                    // Try to send to parent window (if opened as popup)
+                    if (window.opener) {
+                        try {
+                            window.opener.postMessage({
+                                type: 'spotify_token',
+                                data: fullTokenData
+                            }, '*');
+                        } catch (e) {
+                            console.log('Could not send to parent window:', e);
                         }
-                    });
+                    }
                 } catch (error) {
                     // Show error
                     document.getElementById('error-content').style.display = 'block';
-                    document.getElementById('error-message').textContent = `Failed to process callback: ${error.message}`;
-                    console.error('Callback error:', error);
+                    document.getElementById('error-message').textContent = `Token exchange failed: ${error.message}`;
+                    console.error('Token exchange error:', error);
                 }
             } else {
                 // No code or error - show error

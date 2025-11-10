@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Authentication - Stream Pet</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        h1 {
+            margin: 0 0 20px 0;
+            font-size: 28px;
+        }
+        .success {
+            color: #4ade80;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .url-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            word-break: break-all;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .btn {
+            background: #4ade80;
+            color: #1a1a1a;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #22c55e;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 8px 0;
+        }
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success">✅</div>
+        <h1>Spotify Authentication Successful!</h1>
+        <p>Your access token has been received. Copy the code below and paste it in your Stream Pet config page:</p>
+        
+        <div class="url-box" id="url-display" style="user-select: all; cursor: text;"></div>
+        
+        <button id="copy-btn" class="btn">� Copy Access Token</button>
+        
+        <div class="instructions">
+            <strong>Next Steps:</strong>
+            <ol>
+                <li>Click "Copy Access Token" above (or manually select and copy)</li>
+                <li>Go back to your Stream Pet config page</li>
+                <li>The token will be automatically detected and saved!</li>
+                <li>You can close this page after copying</li>
+            </ol>
+        </div>
+        
+        <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+            <strong>Privacy:</strong> This token is only stored in your browser and never sent to any server.
+        </p>
+    </div>
+
+    <script>
+        // Get the token from URL hash
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+        const expiresIn = params.get('expires_in');
+        const state = params.get('state');
+        
+        if (!accessToken) {
+            document.querySelector('.container').innerHTML = `
+                <div style="color: #ef4444; font-size: 48px; margin-bottom: 20px;">❌</div>
+                <h1>No Token Found</h1>
+                <p>The URL doesn't contain an access token. This might happen if:</p>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>You declined authorization on Spotify</li>
+                    <li>The redirect URI doesn't match what's in your Spotify app settings</li>
+                    <li>There was an error during authentication</li>
+                </ul>
+                <p>Please go back to the config page and try again.</p>
+            `;
+        } else {
+            // Create the token package that config.js expects
+            const tokenData = {
+                access_token: accessToken,
+                expires_in: expiresIn,
+                state: state,
+                token_expiry: Date.now() + (parseInt(expiresIn) * 1000)
+            };
+            
+            // Display as JSON for easy copying
+            const tokenString = JSON.stringify(tokenData);
+            document.getElementById('url-display').textContent = tokenString;
+            
+            // Copy to clipboard functionality
+            document.getElementById('copy-btn').addEventListener('click', function() {
+                navigator.clipboard.writeText(tokenString).then(() => {
+                    this.textContent = '✅ Copied! Go back to config page';
+                    this.style.background = '#22c55e';
+                    
+                    // Also try to communicate with opener window if same origin
+                    if (window.opener && !window.opener.closed) {
+                        try {
+                            window.opener.postMessage({
+                                type: 'spotify_token',
+                                data: tokenData
+                            }, '*');
+                        } catch (e) {
+                            console.log('Could not send to parent window (different origin)');
+                        }
+                    }
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = tokenString;
+                    textArea.style.position = 'fixed';
+                    textArea.style.opacity = '0';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    this.textContent = '✅ Copied! Go back to config page';
+                    this.style.background = '#22c55e';
+                });
+            });
+        }
+    </script>
+</body>
+</html>
